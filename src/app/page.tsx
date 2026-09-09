@@ -1,69 +1,89 @@
-import Image from "next/image";
+import Image from 'next/image';
+import Link from 'next/link';
+import Newsletter from '@/components/NewsLetter';
+
+// Single article data for launch
+const LATEST_ARTICLE = {
+  id: '1',
+  title: "Burrow & Chase Showcase Deep Connection in Red Zone Drills",
+  slug: 'burrow-chase-red-zone-drills',
+  category: 'Practice Report',
+  date: 'Sep 7, 2026',
+  readTime: '4 min read',
+  excerpt: 'The first-team offense dominated 11-on-11 situational drills with crisp route running and zero sacks allowed.',
+  imageUrl: 'https://images.unsplash.com/photo-1566577739112-5180d4bf9390?q=80&w=1200&auto=format&fit=crop',
+};
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="min-h-screen bg-slate-50 text-slate-900">
+      {/* Header Bar */}
+      <header className="border-b border-slate-200 bg-white sticky top-0 z-50 shadow-sm">
+        <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-3.5 h-7 bg-[#FB4F14] rounded-sm" />
+            <h1 className="text-xl font-black tracking-tight text-slate-900 uppercase">
+              Bengals <span className="text-[#FB4F14]">Origins</span>
+            </h1>
+          </div>
+          <span className="text-[11px] font-bold px-2.5 py-1 bg-slate-100 text-slate-600 rounded-md border border-slate-200 uppercase tracking-wider">
+            Coverage
+          </span>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </header>
+
+      {/* Main Content Area (Centered Single-Column Container) */}
+      <div className="max-w-2xl mx-auto px-4 py-8 space-y-10">
+        
+
+        {/* Featured Latest Article Section */}
+        <section>
+          <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-200">
+            <h2 className="text-sm font-extrabold text-slate-900 uppercase tracking-wider">
+              Latest Report
+            </h2>
+            <span className="text-xs text-slate-500 font-medium">Just Published</span>
+          </div>
+
+          <article className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:border-[#FB4F14] transition-all">
+            <Link href={`/post/${LATEST_ARTICLE.slug}`}>
+              <div className="relative h-52 sm:h-64 w-full overflow-hidden bg-slate-100">
+                <Image
+                  src={LATEST_ARTICLE.imageUrl}
+                  alt={LATEST_ARTICLE.title}
+                  fill
+                  priority
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <span className="absolute top-3 left-3 bg-[#FB4F14] text-white font-extrabold text-[10px] uppercase px-2.5 py-1 rounded tracking-wider shadow">
+                  {LATEST_ARTICLE.category}
+                </span>
+              </div>
+
+              <div className="p-6">
+                <div className="flex items-center text-xs text-slate-500 gap-2 mb-2 font-medium">
+                  <time>{LATEST_ARTICLE.date}</time>
+                  <span>•</span>
+                  <span>{LATEST_ARTICLE.readTime}</span>
+                </div>
+
+                <h3 className="text-xl sm:text-2xl font-bold text-slate-900 hover:text-[#FB4F14] transition-colors leading-snug">
+                  {LATEST_ARTICLE.title}
+                </h3>
+
+                <p className="text-sm text-slate-600 mt-2.5 leading-relaxed">
+                  {LATEST_ARTICLE.excerpt}
+                </p>
+
+                <div className="mt-4 inline-flex items-center text-xs font-bold text-[#FB4F14] group-hover:underline">
+                  Read Full Story →
+                </div>
+              </div>
+            </Link>
+          </article>
+        </section>
+
+      </div>
+    </main>
   );
 }
