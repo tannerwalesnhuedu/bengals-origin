@@ -1,55 +1,30 @@
-'use client';
-
-import { useState } from 'react';
-
-export default function Newsletter() {
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus('loading');
-
-    try {
-      const res = await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-
-      if (res.ok) {
-        setStatus('success');
-        setEmail('');
-      } else {
-        setStatus('error');
-      }
-    } catch (error) {
-      setStatus('error');
-    }
-  };
-
+export default function Footer() {
   return (
-    <section className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
-{/* Social Share Bar */}
-<div className="flex items-center gap-3 py-3 border-y border-slate-200 my-6 text-xs text-slate-500 font-medium">
-  <span className="font-bold text-slate-700 uppercase tracking-wider text-[11px]">Share Story:</span>
-  <a
-    href={`https://x.com/intent/tweet?text=${encodeURIComponent}`}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors font-semibold"
-  >
-    Share on X
-  </a>
-  <a
-    href="https://www.facebook.com/sharer/sharer.php"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors font-semibold"
-  >
-    Facebook
-  </a>
-</div>
-    </section>
+    <footer className="bg-slate-900 text-slate-400 border-t border-slate-800 mt-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <h3 className="text-white font-bold text-lg mb-3">Bengals Origins</h3>
+          <p className="text-sm leading-relaxed text-slate-400">
+            Dedicated analytical deep-dives, film study, and game reports for the Cincinnati Bengals fanbase.
+          </p>
+        </div>
+        <div>
+          <h4 className="text-white font-semibold text-sm uppercase tracking-wider mb-3">Quick Links</h4>
+          <ul className="space-y-2 text-sm">
+            <li><a href="/" className="hover:text-white transition-colors">Home</a></li>
+            <li><a href="/posts" className="hover:text-white transition-colors">Film Room</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 className="text-white font-semibold text-sm uppercase tracking-wider mb-3">Disclaimer</h4>
+          <p className="text-xs leading-relaxed text-slate-500">
+            This is an independent analysis publication not officially affiliated with or endorsed by the NFL or the Cincinnati Bengals.
+          </p>
+        </div>
+      </div>
+      <div className="border-t border-slate-800 py-6 text-center text-xs text-slate-500">
+        © {new Date().getFullYear()} Bengals Origins. All rights reserved.
+      </div>
+    </footer>
   );
 }
