@@ -1,22 +1,26 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { useState, useEffect } from 'react';
+import { createClient } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-export default function ManageArticlesPage() {
-  const [articles, setArticles] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+);
+
+export default function AdminWritePage() {
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('Bengals Jungle');
+  const [excerpt, setExcerpt] = useState('');
+  const [content, setContent] = useState('');
+  const [readTime, setReadTime] = useState('5 min read');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
   const [checkingAuth, setCheckingAuth] = useState(true);
   const router = useRouter();
-  
-  // Delete confirmation modal states
-  const [selectedArticle, setSelectedArticle] = useState<any>(null);
-  const [confirmTitleInput, setConfirmTitleInput] = useState('');
-  const [deleteError, setDeleteError] = useState('');
 
-  // Secure authorization check
   useEffect(() => {
     async function checkUser() {
       const { data: { session } } = await supabase.auth.getSession();
@@ -24,187 +28,120 @@ export default function ManageArticlesPage() {
         router.push('/admin/login');
       } else {
         setCheckingAuth(false);
-        fetchArticles();
       }
     }
     checkUser();
   }, [router]);
 
-  async function fetchArticles() {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('articles')
-        .select('*')
-        .order('created_at', { ascending: false });
+  const generateSlug = (text: string) => {
+    return text.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
+  };
 
-      if (error) {
-        console.error('Error fetching articles:', error.message);
-      } else if (data) {
-        setArticles(data);
-      }
-    } catch (err) {
-      console.error('Unexpected error:', err);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const handlePublish = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('loading');
+    setErrorMessage('');
 
-  // Secure Delete Handler with Title Verification & Instant Refresh
-  async function handleDeleteConfirm() {
-    if (!selectedArticle) return;
-
-    if (confirmTitleInput !== selectedArticle.title) {
-      setDeleteError('The title you typed does not match. Deletion aborted for safety.');
-      return;
-    }
+    const slug = generateSlug(title);
 
     try {
-      const { error } = await supabase
+      const { error: dbError } = await supabase
         .from('articles')
-        .delete()
-        .eq('id', selectedArticle.id);
+        .insert([{ title, slug, category, excerpt, content, read_time: readTime }]);
 
-      if (error) {
-        setDeleteError(error.message);
-      } else {
-        // Success: Close modal, reset input, and immediately refresh the list!
-        setSelectedArticle(null);
-        setConfirmTitleInput('');
-        setDeleteError('');
-        fetchArticles(); 
-      }
-    } catch (err) {
-      setDeleteError('An unexpected error occurred.');
+      if (dbError) throw dbError;
+
+      await fetch('/api/broadcast', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, excerpt, slug }),
+      });
+
+      setStatus('success');
+      setTitle('');
+      setCategory('Bengals Jungle');
+      setExcerpt('');
+      setContent('');
+    } catch (err: any) {
+      setStatus('error');
+      setErrorMessage(err.message || 'Something went wrong.');
     }
-  }
+  };
 
   if (checkingAuth) {
     return <div className="text-center py-20 text-slate-500 text-sm">Verifying secure session...</div>;
   }
 
   return (
-    <main className="max-w-4xl mx-auto py-12 px-4 sm:px-6 space-y-8">
+    <div className="max-w-2xl mx-auto py-10 px-4 space-y-6">
       
-      {/* Header & Navigation */}
-      <div className="flex items-center justify-between border-b border-slate-800 pb-6">
+      {/* Header with Switch to Manage Posts & Sign Out */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div>
-          <Link href="/admin/write" className="text-xs font-bold text-[#FB4F14] hover:underline uppercase tracking-wider">
-            ← Back to Write Portal
-          </Link>
-          <h1 className="text-3xl font-black text-white mt-2">Manage Published Posts</h1>
+          <span className="text-[#FB4F14] font-extrabold text-xs uppercase tracking-wider">Secure Admin Portal</span>
+          <h1 className="text-2xl font-black text-slate-900 mt-1">Publish New Game Breakdown</h1>
         </div>
-        <Link 
-          href="/" 
-          target="_blank" 
-          className="px-4 py-2 text-xs font-bold bg-slate-800 border border-slate-700 text-slate-200 rounded-xl hover:bg-slate-700 transition-colors"
-        >
-          View Live Site ↗
-        </Link>
+        
+        <div className="flex items-center gap-3">
+          <Link 
+            href="/admin/manage" 
+            className="px-3.5 py-1.5 text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 rounded-xl transition-colors"
+          >
+            ⚙️ Manage Posts
+          </Link>
+          <button 
+            onClick={async () => { await supabase.auth.signOut(); router.push('/admin/login'); }}
+            className="px-3.5 py-1.5 text-xs font-bold bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl transition-colors cursor-pointer"
+          >
+            Sign Out
+          </button>
+        </div>
       </div>
 
-      {/* Articles List */}
-      {loading ? (
-        <div className="text-center py-20 text-slate-500 text-sm">Loading posts...</div>
-      ) : articles.length === 0 ? (
-        <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-12 text-center space-y-3">
-          <p className="text-slate-400 text-sm font-medium">No articles found in the database.</p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {articles.map((article) => (
-            <div 
-              key={article.id} 
-              className="bg-slate-900/60 border border-slate-800 p-6 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-all"
-            >
-              <div className="space-y-1 max-w-xl">
-                <div className="flex items-center gap-2 text-xs">
-                  <span className="font-bold text-[#FB4F14] uppercase tracking-wider">{article.category || 'General'}</span>
-                  <span className="text-slate-600">•</span>
-                  <span className="text-slate-500">{new Date(article.created_at).toLocaleDateString()}</span>
-                </div>
-                <h3 className="text-lg font-bold text-white">{article.title}</h3>
-                <p className="text-xs text-slate-400 line-clamp-1">{article.excerpt || article.content}</p>
-              </div>
-
-              <div className="flex items-center gap-2 self-end sm:self-center">
-                <Link 
-                  href={`/articles/${article.slug}`}
-                  target="_blank"
-                  className="px-3.5 py-2 text-xs font-bold bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-200 rounded-xl transition-colors"
-                >
-                  View
-                </Link>
-
-                <button 
-                  onClick={() => {
-                    setSelectedArticle(article);
-                    setConfirmTitleInput('');
-                    setDeleteError('');
-                  }}
-                  className="px-3.5 py-2 text-xs font-bold bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 text-red-400 rounded-xl transition-colors cursor-pointer"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
+      {status === 'success' && (
+        <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-semibold">
+          ✓ Breakdown published successfully and email broadcast sent!
         </div>
       )}
 
-      {/* SECURE DELETE CONFIRMATION MODAL */}
-      {selectedArticle && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-150">
-          <div className="bg-slate-900 border border-slate-700 rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-6 shadow-2xl">
-            
-            <div className="space-y-2">
-              <h3 className="text-xl font-black text-red-400">⚠️ Confirm Article Deletion</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                This action is permanent and will remove the post from your website immediately. To prevent accidental clicks, please type the exact title of the article below:
-              </p>
-            </div>
+      {status === 'error' && (
+        <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm font-semibold">
+          Error: {errorMessage}
+        </div>
+      )}
 
-            <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800">
-              <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-widest block mb-1">Target Article Title:</span>
-              <p className="text-sm font-bold text-white select-all">{selectedArticle.title}</p>
-            </div>
+      <form onSubmit={handlePublish} className="space-y-4">
+        <div>
+          <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Article Title</label>
+          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14]" />
+        </div>
 
-            <div className="space-y-2">
-              <input 
-                type="text"
-                placeholder="Type exact title here..."
-                value={confirmTitleInput}
-                onChange={(e) => setConfirmTitleInput(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-[#FB4F14]"
-              />
-              {deleteError && <p className="text-xs font-medium text-red-400">{deleteError}</p>}
-            </div>
-
-            <div className="flex items-center justify-end gap-3 pt-2">
-              <button 
-                onClick={() => setSelectedArticle(null)}
-                className="px-4 py-2.5 text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl transition-colors cursor-pointer"
-              >
-                Cancel
-              </button>
-
-              <button 
-                onClick={handleDeleteConfirm}
-                disabled={confirmTitleInput !== selectedArticle.title}
-                className={`px-5 py-2.5 text-xs font-extrabold rounded-xl transition-all ${
-                  confirmTitleInput === selectedArticle.title 
-                    ? 'bg-red-600 hover:bg-red-500 text-white cursor-pointer shadow-lg' 
-                    : 'bg-slate-800 text-slate-600 cursor-not-allowed'
-                }`}
-              >
-                Permanently Delete
-              </button>
-            </div>
-
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Category Tag</label>
+            <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="e.g., Bengals Jungle" required className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14]" />
+            <span className="text-[10px] text-slate-400 mt-1 block">Match exact name: Bengals Jungle, Around the NFL, AFC North, The Fan Lounge</span>
+          </div>
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Read Time</label>
+            <input type="text" value={readTime} onChange={(e) => setReadTime(e.target.value)} placeholder="e.g., 5 min read" required className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14]" />
           </div>
         </div>
-      )}
 
-    </main>
+        <div>
+          <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Short Excerpt</label>
+          <textarea value={excerpt} onChange={(e) => setExcerpt(e.target.value)} rows={2} required className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14]" />
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Full Content</label>
+          <textarea value={content} onChange={(e) => setContent(e.target.value)} rows={8} required className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14]" />
+        </div>
+
+        <button type="submit" disabled={status === 'loading'} className="w-full py-3 font-bold text-sm bg-[#FB4F14] text-white rounded-xl hover:bg-orange-600 transition-colors shadow-sm cursor-pointer">
+          {status === 'loading' ? 'Publishing & Sending Emails...' : 'Publish Breakdown & Email Subscribers'}
+        </button>
+      </form>
+    </div>
   );
 }

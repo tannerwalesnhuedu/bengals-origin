@@ -2,21 +2,33 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function ManageArticlesPage() {
   const [articles, setArticles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  const router = useRouter();
   
   // Delete confirmation modal states
   const [selectedArticle, setSelectedArticle] = useState<any>(null);
   const [confirmTitleInput, setConfirmTitleInput] = useState('');
   const [deleteError, setDeleteError] = useState('');
 
-  // Fetch all articles
+  // Secure authorization check
   useEffect(() => {
-    fetchArticles();
-  }, []);
+    async function checkUser() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        router.push('/admin/login');
+      } else {
+        setCheckingAuth(false);
+        fetchArticles();
+      }
+    }
+    checkUser();
+  }, [router]);
 
   async function fetchArticles() {
     try {
@@ -38,7 +50,7 @@ export default function ManageArticlesPage() {
     }
   }
 
-  // Secure Delete Handler with Title Verification
+  // Secure Delete Handler with Title Verification & Instant Refresh
   async function handleDeleteConfirm() {
     if (!selectedArticle) return;
 
@@ -56,15 +68,19 @@ export default function ManageArticlesPage() {
       if (error) {
         setDeleteError(error.message);
       } else {
-        // Success: Close modal and refresh list
+        // Success: Close modal, reset input, and immediately refresh the list!
         setSelectedArticle(null);
         setConfirmTitleInput('');
         setDeleteError('');
-        fetchArticles();
+        fetchArticles(); 
       }
     } catch (err) {
       setDeleteError('An unexpected error occurred.');
     }
+  }
+
+  if (checkingAuth) {
+    return <div className="text-center py-20 text-slate-500 text-sm">Verifying secure session...</div>;
   }
 
   return (
@@ -73,8 +89,8 @@ export default function ManageArticlesPage() {
       {/* Header & Navigation */}
       <div className="flex items-center justify-between border-b border-slate-800 pb-6">
         <div>
-          <Link href="/admin/login" className="text-xs font-bold text-[#FB4F14] hover:underline uppercase tracking-wider">
-            ← Back to Admin Portal
+          <Link href="/admin/write" className="text-xs font-bold text-[#FB4F14] hover:underline uppercase tracking-wider">
+            ← Back to Write Portal
           </Link>
           <h1 className="text-3xl font-black text-white mt-2">Manage Published Posts</h1>
         </div>
@@ -136,7 +152,7 @@ export default function ManageArticlesPage() {
         </div>
       )}
 
-      {/* SECURE DELETE CONFIRMATION MODAL (Prevents accidental deletion) */}
+      {/* SECURE DELETE CONFIRMATION MODAL */}
       {selectedArticle && (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-150">
           <div className="bg-slate-900 border border-slate-700 rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-6 shadow-2xl">
