@@ -53,36 +53,37 @@ export default function BengalsBlogBlueprint() {
     <div style={styles.screenContainer}>
       <div style={styles.contentContainer}>
         
-        {/* TOP NAVIGATION / BACK */}
-        <Link href="/" style={styles.backButton}>
-          ← Back to Platform
-        </Link>
-
-        {/* HEADER / BRANDING */}
-        <div style={styles.headerBlock}>
-          <div style={styles.pillTag}>
-            <span style={styles.pillTagText}>THE OFFICIAL BENGALS BLUEPRINT</span>
+     {/* Featured Editorial Hero */}
+        <section className="space-y-4">
+          {/* Updated Badge Styling for High Readability */}
+          <div className="inline-block text-xs font-bold uppercase tracking-widest text-white bg-[#FB4F14] px-3.5 py-1 rounded-md shadow-xs">
+            The Official Bengals Blueprint
           </div>
-          <h1 style={styles.siteTitle}>Gridiron Strategy & Analysis</h1>
-          <p style={styles.siteSubtitle}>
-            Unfiltered tactical breakdowns, roster metrics, and deep dives into professional football execution.
-          </p>
-        </div>
+          
+          <div className="space-y-3">
+            <h2 className="text-3xl md:text-5xl font-black tracking-tight text-slate-900 leading-tight">
+              Gridiron Strategy & Analysis
+            </h2>
+            <p className="text-slate-600 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
+              Unfiltered tactical breakdowns, roster metrics, and deep dives into professional football execution.
+            </p>
+          </div>
 
-        {/* FEATURED HERO ARTICLE */}
-        {activeCategory === 'All' && featuredArticle && (
-          <div style={styles.heroCard}>
-            <div style={styles.heroBadgeRow}>
-              <span style={styles.categoryBadge}>{featuredArticle.category}</span>
-              <span style={styles.metaText}>{featuredArticle.date} • {featuredArticle.readTime}</span>
+          {/* FEATURED HERO ARTICLE */}
+          {activeCategory === 'All' && featuredArticle && (
+            <div style={styles.heroCard}>
+              <div style={styles.heroBadgeRow}>
+                <span style={styles.categoryBadge}>{featuredArticle.category}</span>
+                <span style={styles.metaText}>{featuredArticle.date} • {featuredArticle.readTime}</span>
+              </div>
+              <h2 style={styles.heroTitle}>{featuredArticle.title}</h2>
+              <p style={styles.heroExcerpt}>{featuredArticle.excerpt}</p>
+              <Link href={`/post/${featuredArticle.slug}`} style={styles.primaryButton}>
+                Read Featured Analysis →
+              </Link>
             </div>
-            <h2 style={styles.heroTitle}>{featuredArticle.title}</h2>
-            <p style={styles.heroExcerpt}>{featuredArticle.excerpt}</p>
-            <Link href={`/post/${featuredArticle.slug}`} style={styles.primaryButton}>
-              Read Featured Analysis →
-            </Link>
-          </div>
-        )}
+          )}
+        </section>
 
         {/* CATEGORY FILTER BAR */}
         <div style={styles.filterScroll}>
