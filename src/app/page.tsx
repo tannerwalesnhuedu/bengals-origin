@@ -64,8 +64,8 @@ export default function Home() {
         {activeCategory === 'All' && featuredArticle && (
           <Link 
             href={`/articles/${featuredArticle.slug}`}
-            className="block group bg-slate-900/80 border border-slate-800 hover:border-[#FB4F14] transition-all rounded-3xl p-6 sm:p-8 space-y-4 mt-6 shadow-xl cursor-pointer"
-          >
+            className="block group bg-[#0b0f19] border border-slate-800 hover:border-[#FB4F14] transition-all rounded-3xl p-6 sm:p-8 shadow-2xl"
+            >
             <div className="flex items-center justify-between text-xs">
               <span className="font-bold text-[#FB4F14] bg-orange-500/10 px-3 py-1 rounded-full uppercase tracking-wider">
                 {featuredArticle.category || 'Bengals Jungle'}
@@ -129,7 +129,7 @@ export default function Home() {
               <Link 
                 key={article.id || article.slug} 
                 href={`/articles/${article.slug}`}
-                className="block bg-slate-900/60 border border-slate-800 hover:border-[#FB4F14] p-6 rounded-2xl transition-all space-y-3 group cursor-pointer shadow-sm hover:shadow-md"
+               className="block bg-[#0b0f19] border border-slate-800 hover:border-[#FB4F14] p-6 rounded-2xl transition-all shadow-xl"
               >
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-bold text-[#FB4F14] uppercase tracking-wider">{article.category || 'Bengals Jungle'}</span>
