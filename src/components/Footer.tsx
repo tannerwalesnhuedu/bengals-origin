@@ -3,27 +3,18 @@ import Link from 'next/link';
 export default function Footer() {
   return (
     <footer className="bg-slate-900 text-slate-400 border-t border-slate-800 mt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
         <div>
           <h3 className="text-white font-bold text-lg mb-3">Bengals Origins</h3>
           <p className="text-xs leading-relaxed text-slate-400">
             Dedicated analytical deep-dives, film study, and game reports for the Cincinnati Bengals fanbase.
           </p>
         </div>
-        
-        <div>
-          <h4 className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Sections</h4>
-          <ul className="space-y-2 text-xs">
-            <li><Link href="/" className="hover:text-[#FB4F14] transition-colors">Home Reports</Link></li>
-            <li><Link href="/admin/write" className="hover:text-[#FB4F14] transition-colors">Admin Portal</Link></li>
-          </ul>
-        </div>
 
         <div>
-          <h4 className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Connect & Feed</h4>
+          <h4 className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Navigation</h4>
           <ul className="space-y-2 text-xs">
-            <li><a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#FB4F14] transition-colors">X (Twitter)</a></li>
-            <li><a href="https://substack.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#FB4F14] transition-colors">Substack Profile</a></li>
+            <li><Link href="/" className="hover:text-[#FB4F14] transition-colors">Home</Link></li>
           </ul>
         </div>
 
