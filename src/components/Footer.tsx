@@ -2,37 +2,23 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="bg-slate-900 text-slate-400 border-t border-slate-800 mt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div>
-          <h3 className="text-white font-bold text-lg mb-3">Bengals Origins</h3>
-          <p className="text-xs leading-relaxed text-slate-400">
-            Dedicated analytical deep-dives, film study, and game reports for the Cincinnati Bengals fanbase.
-          </p>
+    <footer className="bg-slate-950 text-slate-400 border-t border-slate-800 mt-20">
+      <div className="max-w-4xl mx-auto px-4 py-10 flex flex-col sm:flex-row items-center justify-between gap-6 text-xs">
+        
+        {/* Left side: Branding / Copyright */}
+        <div className="space-y-1 text-center sm:text-left">
+          <p className="font-bold text-white">Bengals Origins — Fan-Powered Insights</p>
+          <p className="text-slate-500">© {new Date().getFullYear()} All rights reserved. Not officially affiliated with the NFL or Cincinnati Bengals.</p>
         </div>
 
-        <div>
-          <h4 className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Navigation</h4>
-          <ul className="space-y-2 text-xs">
-            <li><Link href="/" className="hover:text-[#FB4F14] transition-colors">Home</Link></li>
-          </ul>
+        {/* Right side: Policy & Navigation Links */}
+        <div className="flex flex-wrap items-center justify-center gap-6 font-semibold">
+          <Link href="/" className="hover:text-[#FB4F14] transition-colors">Home</Link>
+          <Link href="/privacy" className="hover:text-[#FB4F14] transition-colors">Privacy Policy</Link>
+          <Link href="/terms" className="hover:text-[#FB4F14] transition-colors">Terms of Service</Link>
+          <Link href="/contact" className="hover:text-[#FB4F14] transition-colors">Contact Us</Link>
         </div>
 
-        <div>
-          <h4 className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Legal & Trust</h4>
-          <ul className="space-y-2 text-xs mb-4">
-            <li><Link href="/privacy" className="hover:text-[#FB4F14] transition-colors">Privacy Policy</Link></li>
-            <li><Link href="/terms" className="hover:text-[#FB4F14] transition-colors">Terms of Service</Link></li>
-            <li><Link href="/contact" className="hover:text-[#FB4F14] transition-colors">Contact Us</Link></li>
-          </ul>
-          <p className="text-[11px] leading-relaxed text-slate-500">
-            Independent analysis publication not officially affiliated with the NFL or Cincinnati Bengals.
-          </p>
-        </div>
-      </div>
-      
-      <div className="border-t border-slate-800 py-6 text-center text-xs text-slate-500">
-        © {new Date().getFullYear()} Bengals Origins. All rights reserved.
       </div>
     </footer>
   );
