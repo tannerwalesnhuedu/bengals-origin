@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
+import Script from "next/script"; // 1. Import the Next.js Script component
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -30,6 +31,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0b0f19] text-slate-100 min-h-screen flex flex-col selection:bg-[#FB4F14] selection:text-white`}>
         
+        {/* 2. Enzuzo Global Root Element */}
+        <div id="__enzuzo-root"></div>
+
+        {/* 3. Enzuzo Script Loaded Efficiently via Next.js */}
+        <Script
+          id="__enzuzo-root-script"
+          src="https://app.enzuzo.com/scripts/tos/a1bc0cd4-cff3-11f1-8fcb-23754500e546"
+          strategy="afterInteractive"
+        />
+
         {/* Sticky Professional Navigation */}
         <header className="bg-[#0b0f19]/90 backdrop-blur-md border-b border-slate-800 text-white sticky top-0 z-50">
           <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
