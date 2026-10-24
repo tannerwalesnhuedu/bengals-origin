@@ -62,28 +62,31 @@ export default function Home() {
 
         {/* Featured Hero Card (Shows only on 'All') */}
         {activeCategory === 'All' && featuredArticle && (
-          <div className="bg-slate-900/80 border border-slate-800 hover:border-[#FB4F14]/50 transition-all rounded-3xl p-6 sm:p-8 space-y-4 mt-6 shadow-xl">
+          <Link 
+            href={`/articles/${featuredArticle.slug}`}
+            className="block group bg-slate-900/80 border border-slate-800 hover:border-[#FB4F14] transition-all rounded-3xl p-6 sm:p-8 space-y-4 mt-6 shadow-xl cursor-pointer"
+          >
             <div className="flex items-center justify-between text-xs">
               <span className="font-bold text-[#FB4F14] bg-orange-500/10 px-3 py-1 rounded-full uppercase tracking-wider">
                 {featuredArticle.category || 'Bengals Jungle'}
               </span>
               <span className="text-slate-500">{new Date(featuredArticle.created_at).toLocaleDateString()}</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-white hover:text-[#FB4F14] transition-colors">
-              <Link href={`/articles/${featuredArticle.slug}`}>{featuredArticle.title}</Link>
+            
+            <h2 className="text-2xl sm:text-3xl font-black text-white group-hover:text-[#FB4F14] transition-colors">
+              {featuredArticle.title}
             </h2>
+            
             <p className="text-slate-300 text-sm sm:text-base line-clamp-2 leading-relaxed">
               {featuredArticle.excerpt || featuredArticle.content?.substring(0, 140) + '...'}
             </p>
-            <div>
-              <Link 
-                href={`/articles/${featuredArticle.slug}`} 
-                className="inline-block font-extrabold text-xs text-white bg-[#FB4F14] hover:bg-orange-600 px-5 py-2.5 rounded-xl transition-all shadow-sm"
-              >
+
+            <div className="pt-2">
+              <span className="inline-block font-extrabold text-xs text-white bg-[#FB4F14] group-hover:bg-orange-600 px-5 py-2.5 rounded-xl transition-all shadow-sm">
                 Read Full Take →
-              </Link>
+              </span>
             </div>
-          </div>
+          </Link>
         )}
       </section>
 
