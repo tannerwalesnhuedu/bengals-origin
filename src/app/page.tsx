@@ -9,7 +9,8 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('All');
 
-  const categories = ['All', 'Game Reactions', 'Roster & Trades', 'Fan Thoughts'];
+  // Categories designed for your 80/20 mix of Bengals coverage and general NFL takes
+  const categories = ['All', 'Bengals Jungle', 'Around the NFL', 'AFC North', 'The Fan Lounge'];
 
   useEffect(() => {
     async function fetchArticles() {
@@ -39,23 +40,23 @@ export default function Home() {
     ? articles
     : articles.filter(art => art.category === activeCategory);
 
-  const featuredArticle = articles[0]; // Most recent post as hero
+  const featuredArticle = articles[0]; // Most recent post goes to the hero spotlight
 
   return (
     <main className="max-w-4xl mx-auto py-12 px-4 sm:px-6 space-y-10">
       
-      {/* Editorial Hero Section */}
+      {/* Hero Section */}
       <section className="space-y-4 pt-4">
         <div className="inline-block text-[11px] font-extrabold uppercase tracking-widest text-[#FB4F14] bg-orange-500/10 border border-orange-500/20 px-3 py-1 rounded-md">
-          The Unfiltered Fan Perspective
+          Unfiltered Fan Perspectives & NFL Takes
         </div>
         
         <div className="space-y-3">
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white leading-tight">
-            Real Talk & Reactions from the Jungle.
+            Cincinnati Roots. Sunday-Wide NFL Reactions.
           </h1>
           <p className="text-slate-400 text-base sm:text-lg max-w-2xl leading-relaxed">
-            No complex coaching jargon—just honest game reactions, big-picture thoughts, and passion for the Cincinnati Bengals.
+            Your go-to spot for honest Bengals breakdowns, massive league-wide storylines, game reactions, and real football passion.
           </p>
         </div>
 
@@ -64,7 +65,7 @@ export default function Home() {
           <div className="bg-slate-900/80 border border-slate-800 hover:border-[#FB4F14]/50 transition-all rounded-3xl p-6 sm:p-8 space-y-4 mt-6 shadow-xl">
             <div className="flex items-center justify-between text-xs">
               <span className="font-bold text-[#FB4F14] bg-orange-500/10 px-3 py-1 rounded-full uppercase tracking-wider">
-                {featuredArticle.category || 'Game Reactions'}
+                {featuredArticle.category || 'Bengals Jungle'}
               </span>
               <span className="text-slate-500">{new Date(featuredArticle.created_at).toLocaleDateString()}</span>
             </div>
@@ -79,14 +80,14 @@ export default function Home() {
                 href={`/articles/${featuredArticle.slug}`} 
                 className="inline-block font-extrabold text-xs text-white bg-[#FB4F14] hover:bg-orange-600 px-5 py-2.5 rounded-xl transition-all shadow-sm"
               >
-                Read Full Breakdown →
+                Read Full Take →
               </Link>
             </div>
           </div>
         )}
       </section>
 
-      {/* Category Filter Chips */}
+      {/* Category Filter Bar */}
       <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
         {categories.map(cat => (
           <button
@@ -103,21 +104,21 @@ export default function Home() {
         ))}
       </div>
 
-      {/* Feed Section */}
+      {/* Article Feed Section */}
       <div className="space-y-6 pt-4">
         <div className="flex items-center justify-between border-b border-slate-800 pb-3">
           <h3 className="text-sm font-black uppercase tracking-widest text-slate-300">
-            {activeCategory === 'All' ? 'Recent Posts' : `${activeCategory} Posts`}
+            {activeCategory === 'All' ? 'Latest Takes Across the League' : `${activeCategory} Posts`}
           </h3>
           <span className="text-xs text-slate-500 font-medium">{filteredArticles.length} Articles</span>
         </div>
 
         {loading ? (
-          <div className="text-center py-20 text-slate-500 text-sm">Loading articles from database...</div>
+          <div className="text-center py-20 text-slate-500 text-sm">Loading posts from database...</div>
         ) : filteredArticles.length === 0 ? (
           <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-12 text-center space-y-3">
-            <p className="text-slate-400 text-sm font-medium">No articles found in this category yet.</p>
-            <p className="text-slate-600 text-xs">Head over to your admin portal to publish your first piece!</p>
+            <p className="text-slate-400 text-sm font-medium">No posts found in this category yet.</p>
+            <p className="text-slate-600 text-xs">Head over to your admin portal to publish your first take!</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4">
@@ -127,7 +128,7 @@ export default function Home() {
                 className="bg-slate-900/60 border border-slate-800 hover:border-slate-700 p-6 rounded-2xl transition-all space-y-3 group"
               >
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-[#FB4F14] uppercase tracking-wider">{article.category || 'General'}</span>
+                  <span className="font-bold text-[#FB4F14] uppercase tracking-wider">{article.category || 'Bengals Jungle'}</span>
                   <span className="text-slate-500">{new Date(article.created_at).toLocaleDateString()}</span>
                 </div>
                 <h4 className="text-lg sm:text-xl font-bold text-white group-hover:text-[#FB4F14] transition-colors">
@@ -139,7 +140,7 @@ export default function Home() {
                 <div className="pt-2 flex items-center justify-between">
                   <span className="text-xs text-slate-500">{article.read_time || '4 min read'}</span>
                   <Link href={`/articles/${article.slug}`} className="text-xs font-bold text-[#FB4F14] group-hover:translate-x-1 transition-transform">
-                    Read Article →
+                    Read Take →
                   </Link>
                 </div>
               </article>
