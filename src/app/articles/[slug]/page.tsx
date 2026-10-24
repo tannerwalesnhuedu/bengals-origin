@@ -15,7 +15,7 @@ export default function ArticlePage() {
   const [shareOpen, setShareOpen] = useState(false);
   const shareMenuRef = useRef<HTMLDivElement>(null);
 
-  // Close share menu when clicking outside
+  // Close custom menu when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (shareMenuRef.current && !shareMenuRef.current.contains(event.target as Node)) {
@@ -59,6 +59,24 @@ export default function ArticlePage() {
       setCopied(false);
       setShareOpen(false);
     }, 1500);
+  };
+
+  // SMART SHARE HANDLER: Uses phone's native app popup on mobile, or dropdown on desktop
+  const handleShareClick = async () => {
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({
+          title: article?.title || 'Bengals Origins Breakdown',
+          text: 'Check out this breakdown on Bengals Origins!',
+          url: window.location.href,
+        });
+        return;
+      } catch (err) {
+        // User cancelled native share, do nothing
+      }
+    }
+    // Fallback to custom dropdown on desktop/unsupported browsers
+    setShareOpen(!shareOpen);
   };
 
   if (loading) {
@@ -106,22 +124,21 @@ export default function ArticlePage() {
         </h1>
       </div>
 
-      {/* Clean Interactive Share Drawer/Dropdown Bar */}
+      {/* Share Bar with Native Mobile OS Integration */}
       <div className="flex items-center justify-between border-y border-slate-800/80 py-3 px-4 bg-slate-900/40 rounded-2xl relative">
         <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Spread The Word</span>
         
         <div className="relative" ref={shareMenuRef}>
           <button 
-            onClick={() => setShareOpen(!shareOpen)}
+            onClick={handleShareClick}
             className="px-4 py-2 text-xs font-extrabold bg-[#FB4F14] hover:bg-orange-600 text-white rounded-xl transition-all shadow-sm flex items-center gap-2 cursor-pointer"
           >
             <span>📤 Share Article</span>
-            <span className={`transform transition-transform text-[10px] ${shareOpen ? 'rotate-180' : ''}`}>▼</span>
           </button>
 
-          {/* Popup Dropdown Menu for Mobile & Desktop */}
+          {/* Desktop Fallback Dropdown Menu with Fixed Reddit Icon */}
           {shareOpen && (
-            <div className="absolute right-0 mt-2 w-56 bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl p-2 z-50 space-y-1 animate-in fade-in zoom-in-95 duration-150">
+            <div className="absolute right-0 mt-2 w-56 bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl p-2 z-50 space-y-1">
               
               <button 
                 onClick={handleCopyLink} 
@@ -154,7 +171,7 @@ export default function ArticlePage() {
                 rel="noopener noreferrer" 
                 className="w-full text-left px-3 py-2 text-xs font-bold text-slate-200 hover:bg-slate-800 rounded-xl flex items-center gap-2.5 transition-colors"
               >
-                <span>r/</span> <span>Share on Reddit</span>
+                <span className="font-black text-orange-500">#</span> <span>Share on Reddit</span>
               </a>
 
               <a 
