@@ -123,27 +123,28 @@ export default function Home() {
         ) : (
           <div className="grid grid-cols-1 gap-4">
             {filteredArticles.map((article) => (
-              <article 
+              <Link 
                 key={article.id || article.slug} 
-                className="bg-slate-900/60 border border-slate-800 hover:border-slate-700 p-6 rounded-2xl transition-all space-y-3 group"
+                href={`/articles/${article.slug}`}
+                className="block bg-slate-900/60 border border-slate-800 hover:border-[#FB4F14] p-6 rounded-2xl transition-all space-y-3 group cursor-pointer shadow-sm hover:shadow-md"
               >
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-bold text-[#FB4F14] uppercase tracking-wider">{article.category || 'Bengals Jungle'}</span>
                   <span className="text-slate-500">{new Date(article.created_at).toLocaleDateString()}</span>
                 </div>
                 <h4 className="text-lg sm:text-xl font-bold text-white group-hover:text-[#FB4F14] transition-colors">
-                  <Link href={`/articles/${article.slug}`}>{article.title}</Link>
+                  {article.title}
                 </h4>
                 <p className="text-slate-400 text-sm line-clamp-2 leading-relaxed">
                   {article.excerpt || article.content}
                 </p>
                 <div className="pt-2 flex items-center justify-between">
                   <span className="text-xs text-slate-500">{article.read_time || '4 min read'}</span>
-                  <Link href={`/articles/${article.slug}`} className="text-xs font-bold text-[#FB4F14] group-hover:translate-x-1 transition-transform">
+                  <span className="text-xs font-bold text-[#FB4F14] group-hover:translate-x-1 transition-transform">
                     Read Take →
-                  </Link>
+                  </span>
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
         )}
