@@ -63,8 +63,8 @@ export default function Home() {
         {activeCategory === 'All' && featuredArticle && (
           <Link 
             href={`/articles/${featuredArticle.slug}`}
-            className="block group bg-white border border-slate-200 hover:border-[#FB4F14] transition-all rounded-3xl p-6 sm:p-8 shadow-sm hover:shadow-md"
-          >
+            className="block group bg-white border border-slate-200 hover:border-[#FB4F14] transition-all rounded-3xl p-6 sm:p-8 shadow-sm hover:shadow-md"          
+            >
             <div className="flex items-center justify-between text-xs">
               <span className="font-bold text-[#FB4F14] bg-orange-500/10 px-3 py-1 rounded-full uppercase tracking-wider">
                 {featuredArticle.category || 'Bengals Jungle'}
@@ -128,8 +128,7 @@ export default function Home() {
               <Link 
                 key={article.id || article.slug} 
                 href={`/articles/${article.slug}`}
-                className="block bg-white border border-slate-200 hover:border-[#FB4F14] p-6 rounded-2xl transition-all shadow-sm hover:shadow-md group"
-              >
+                className="block bg-white border border-slate-200 hover:border-[#FB4F14] p-6 rounded-2xl transition-all shadow-sm hover:shadow-md group"              >
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-bold text-[#FB4F14] uppercase tracking-wider">{article.category || 'Bengals Jungle'}</span>
                   <span className="text-slate-400">{new Date(article.created_at).toLocaleDateString()}</span>

@@ -12,6 +12,14 @@
   --font-mono: var(--font-geist-mono);
 }
 
+@layer base {
+  body {
+    background-color: #f8fafc; /* Clean soft modern background */
+    color: #0f172a;
+    font-family: var(--font-geist-sans), sans-serif;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
