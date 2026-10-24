@@ -2,9 +2,11 @@ import Link from 'next/link';
 
 export default function PostCard({ article }: { article: any }) {
   return (
-    <article className="group bg-slate-900/60 border border-slate-800 hover:border-[#FB4F14] rounded-2xl overflow-hidden transition-all duration-200 shadow-sm hover:shadow-md">
-      <Link href={`/articles/${article.slug}`} className="block p-6 space-y-3 cursor-pointer">
-        
+    <Link 
+      href={`/articles/${article.slug}`}
+      className="block group bg-slate-900/60 border border-slate-800 hover:border-[#FB4F14] p-6 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer"
+    >
+      <div className="space-y-3">
         {/* Category & Date Header */}
         <div className="flex items-center justify-between text-xs">
           <div className="flex items-center gap-2">
@@ -31,8 +33,7 @@ export default function PostCard({ article }: { article: any }) {
         <div className="pt-2 flex items-center justify-end text-xs font-bold text-[#FB4F14] group-hover:translate-x-1 transition-transform">
           Read Take →
         </div>
-
-      </Link>
-    </article>
+      </div>
+    </Link>
   );
 }
