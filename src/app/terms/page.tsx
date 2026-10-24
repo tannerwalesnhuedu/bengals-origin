@@ -3,7 +3,7 @@ export default function TermsPage() {
     <main className="max-w-4xl mx-auto py-16 px-4 text-slate-300 space-y-6">
       <h1 className="text-3xl font-black text-white">Terms of Service</h1>
       
-      <div className="bg-slate-900/60 border border-slate-800 p-8 rounded-2xl min-h-100">
+      <div className="bg-slate-900/60 border border-slate-800 p-8 rounded-2xl min-h-400">
         {/* Enzuzo Embed Script Container */}
         <div id="__enzuzo-root"></div>
         <script 
