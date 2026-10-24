@@ -41,12 +41,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link href="/" className="text-xs font-bold text-slate-300 hover:text-white transition-colors">
                 Home
               </Link>
-              <Link 
-                href="/admin/login" 
-                className="text-[11px] font-extrabold text-slate-300 hover:text-[#FB4F14] bg-slate-800/80 border border-slate-700 px-3.5 py-1.5 rounded-xl transition-all"
-              >
-                Admin Portal
-              </Link>
             </nav>
           </div>
         </header>
@@ -65,7 +59,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
             <div className="flex items-center gap-6">
               <Link href="/" className="hover:text-white transition-colors">Home</Link>
-              <Link href="/admin/login" className="hover:text-white transition-colors">Admin Login</Link>
             </div>
           </div>
         </footer>
