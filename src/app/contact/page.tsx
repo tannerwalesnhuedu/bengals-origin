@@ -10,7 +10,7 @@ export default function TermsPage() {
           Our aim is to keep this Agreement as readable as possible, but in some cases for legal reasons, some of the language is required "legalese"...
         </p>
 
-        {/* You can copy-paste the rest of your sections right here */}
+      <div id="__enzuzo-root"></div><script id="__enzuzo-root-script" src="https://app.enzuzo.com/scripts/tos/a1bc0cd4-cff3-11f1-8fcb-23754500e546"></script>
       </div>
     </main>
   );

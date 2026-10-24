@@ -9,6 +9,7 @@ export default function PrivacyPage() {
         <p>
           Welcome to Bengals Origins. This Privacy Policy outlines how we handle information...
         </p>
+        <div id="__enzuzo-root"></div><script id="__enzuzo-root-script" src="https://app.enzuzo.com/scripts/tos/a1bc0cd4-cff3-11f1-8fcb-23754500e546"></script>
       </div>
     </main>
   );

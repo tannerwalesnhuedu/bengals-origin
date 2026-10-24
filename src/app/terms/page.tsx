@@ -19,6 +19,7 @@ export default function TermsPage() {
         <p>
           The website and its entire contents are owned by Bengals Origins and protected by intellectual property laws.
         </p>
+        <div id="__enzuzo-root"></div><script id="__enzuzo-root-script" src="https://app.enzuzo.com/scripts/tos/a1bc0cd4-cff3-11f1-8fcb-23754500e546"></script>
       </div>
     </main>
   );
