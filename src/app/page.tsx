@@ -42,7 +42,8 @@ export default function Home() {
   const featuredArticle = articles[0];
 
   return (
-<main className="max-w-4xl mx-auto py-12 px-4 sm:px-6 space-y-10 text-slate-900">      
+    <main className="max-w-4xl mx-auto py-12 px-4 sm:px-6 space-y-10 bg-[#fdfbf7] min-h-screen text-slate-900">
+      
       {/* Hero Section */}
       <section className="space-y-4 pt-4">
         <div className="inline-block text-[11px] font-extrabold uppercase tracking-widest text-[#FB4F14] bg-orange-500/10 border border-orange-500/20 px-3 py-1 rounded-md">
