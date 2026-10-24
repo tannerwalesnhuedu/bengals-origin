@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
-import Script from "next/script"; // 1. Import the Next.js Script component
+import Footer from "@/components/Footer"; // 1. Import your Footer component
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://bengalsorigins.com",
+    url: "https://bengals-origin.vercel.app",
     siteName: "Bengals Origins",
     title: "Bengals Origins | Fan Perspectives & Game Insights",
     description: "Unfiltered Cincinnati Bengals fan perspectives, game reactions, and roster thoughts.",
@@ -51,18 +51,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </div>
 
-        {/* Professional Footer */}
-        <footer className="bg-[#070a12] text-slate-400 text-xs py-12 border-t border-slate-800/80 mt-20">
-          <div className="max-w-5xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-            <div>
-              <p className="font-bold text-slate-200">Bengals Origins — Fan-Powered Insights</p>
-              <p className="text-slate-500 mt-1">© {new Date().getFullYear()} All rights reserved. Not officially affiliated with the NFL or Cincinnati Bengals.</p>
-            </div>
-            <div className="flex items-center gap-6">
-              <Link href="/" className="hover:text-white transition-colors">Home</Link>
-            </div>
-          </div>
-        </footer>
+        {/* Render your imported Footer component here */}
+        <Footer />
 
       </body>
     </html>
