@@ -10,34 +10,34 @@ export default function ArticlePage() {
   const slug = params?.slug as string;
 
   const [article, setArticle] = useState<any>(null);
-  const [trendingArticles, setTrendingArticles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
 
-useEffect(() => {
-  async function loadContent() {
-    try {
-      setLoading(true);
-      
-      const { data, error } = await supabase
-        .from('articles')
-        .select('*');
+  useEffect(() => {
+    async function loadArticle() {
+      if (!slug) return;
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('articles')
+          .select('*')
+          .eq('slug', slug)
+          .single();
 
-      if (error) {
-        console.error('Supabase error:', error.message);
-      } else if (data) {
-        setArticle(data);
+        if (error) {
+          console.error('Supabase error:', error.message);
+        } else if (data) {
+          setArticle(data);
+        }
+      } catch (err) {
+        console.error('Unexpected error:', err);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error('Unexpected error:', err);
-    } finally {
-      // THIS GUARANTEES LOADING STOPS EVEN IF IT FAILS
-      setLoading(false);
     }
-  }
 
-  loadContent();
-}, []);
+    loadArticle();
+  }, [slug]);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -45,34 +45,15 @@ useEffect(() => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleNativeShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: article.title,
-          text: article.excerpt || 'Check out this Bengals breakdown!',
-          url: window.location.href,
-        });
-      } catch (err) {
-        // User cancelled
-      }
-    } else {
-      handleCopyLink();
-    }
-  };
-
   if (loading) {
-    return (
-      <div className="min-h-[50vh] flex items-center justify-center text-slate-500 text-sm font-medium">
-        Loading breakdown...
-      </div>
-    );
+    return <div className="min-h-[50vh] flex items-center justify-center text-slate-500 text-sm">Loading article...</div>;
   }
 
   if (!article) {
     return (
       <main className="max-w-xl mx-auto py-24 text-center space-y-4 px-4">
-        <h1 className="text-3xl font-black text-slate-900">Breakdown Not Found</h1>
+        <h1 className="text-3xl font-black text-white">Article Not Found</h1>
+        <p className="text-slate-400 text-sm">This piece might have been removed or the link is incorrect.</p>
         <Link href="/" className="inline-block px-6 py-3 bg-[#FB4F14] text-white font-bold text-sm rounded-xl">
           Back to Home
         </Link>
@@ -83,110 +64,66 @@ useEffect(() => {
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
 
   return (
-    <main className="max-w-6xl mx-auto py-12 px-4 sm:px-6">
-      {/* Balanced Grid: Main article gets more breathing room (7 cols), sidebar gets 4 cols */}
-      <div className="grid grid-cols-1 lg:grid-cols-11 gap-12 items-start">
+    <main className="max-w-3xl mx-auto py-12 px-4 sm:px-6 space-y-8">
+      
+      {/* Back Link */}
+      <Link href="/" className="inline-block text-xs font-bold text-[#FB4F14] hover:underline uppercase tracking-wider">
+        ← Back to All Posts
+      </Link>
+      
+      {/* Article Header info */}
+      <div className="space-y-4 border-b border-slate-800 pb-8">
+        <div className="flex items-center gap-3 text-xs font-semibold text-slate-400">
+          <span className="bg-orange-500/10 text-[#FB4F14] border border-orange-500/20 px-3 py-1 rounded-full uppercase tracking-wider text-[10px] font-extrabold">
+            {article.category || 'Fan Thoughts'}
+          </span>
+          <span>•</span>
+          <span>{new Date(article.created_at).toLocaleDateString()}</span>
+          <span>•</span>
+          <span>{article.read_time || '4 min read'}</span>
+        </div>
         
-        {/* Main Article Content */}
-        <div className="lg:col-span-7 space-y-8">
-          <Link href="/" className="inline-block text-xs font-bold text-[#FB4F14] hover:underline uppercase tracking-wider">
-            ← Back to All Breakdowns
-          </Link>
-          
-          <div className="space-y-4">
-            <div className="flex items-center gap-3 text-xs font-semibold text-slate-500">
-              <span className="bg-orange-50 text-[#FB4F14] border border-orange-100 px-3.5 py-1 rounded-full uppercase tracking-wider text-[10px] font-extrabold shadow-sm">
-                {article.category || 'Game Analysis'}
-              </span>
-              <span>•</span>
-              <span>{article.read_time || '5 min read'}</span>
-            </div>
-            <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight leading-tight">
-              {article.title}
-            </h1>
-          </div>
-
-          {/* Clean Share Bar (No WhatsApp, optimized for Android & Laptop) */}
-          <div className="flex flex-wrap items-center justify-between gap-3 border-y border-slate-200 py-3.5 px-2 bg-slate-50/50 rounded-2xl">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Share Breakdown</span>
-            
-            <div className="flex items-center flex-wrap gap-2">
-              {typeof navigator !== 'undefined' && 'share' in navigator && (
-                <button 
-                  onClick={handleNativeShare} 
-                  className="px-4 py-2 text-xs font-extrabold bg-[#FB4F14] hover:bg-orange-600 text-white rounded-xl transition-all shadow-sm cursor-pointer flex items-center gap-1.5"
-                >
-                  <span>📲 Share</span>
-                </button>
-              )}
-
-              <button 
-                onClick={handleCopyLink} 
-                className="px-4 py-2 text-xs font-bold bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl transition-colors cursor-pointer shadow-sm"
-              >
-                {copied ? '✓ Copied!' : '📋 Copy Link'}
-              </button>
-
-              <a 
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}&url=${encodeURIComponent(currentUrl)}`} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="px-4 py-2 text-xs font-bold bg-white border border-slate-200 hover:bg-slate-50 text-slate-900 rounded-xl transition-colors shadow-sm"
-              >
-                𝕏 Share
-              </a>
-
-              <a 
-                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="px-4 py-2 text-xs font-bold bg-white border border-slate-200 hover:bg-slate-50 text-blue-600 rounded-xl transition-colors shadow-sm"
-              >
-                f Share
-              </a>
-            </div>
-          </div>
-
-          <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed space-y-5 text-base sm:text-lg pt-2">
-            {article.content}
-          </div>
-        </div>
-
-        {/* Fixed Right Sidebar for Top Read Breakdowns */}
-        <div className="lg:col-span-4 space-y-6">
-          <div className="bg-white border border-slate-200/80 p-6 sm:p-7 rounded-3xl shadow-sm space-y-5 sticky top-24">
-            <div className="flex items-center gap-2 border-b border-slate-100 pb-3.5">
-              <span className="w-2 h-2 rounded-full bg-[#FB4F14] animate-pulse"></span>
-              <h3 className="text-xs font-black uppercase tracking-widest text-slate-800">Top Read Breakdowns</h3>
-            </div>
-
-            <div className="space-y-3">
-              {trendingArticles.length === 0 ? (
-                <p className="text-xs text-slate-400 italic">No trending articles yet.</p>
-              ) : (
-                trendingArticles.map((item, index) => (
-                  <Link
-                    key={item.slug}
-                    href={`/articles/${item.slug}`}
-                    className="block p-3.5 rounded-2xl bg-slate-50 hover:bg-orange-50/50 border border-slate-100 hover:border-orange-200 transition-all group"
-                  >
-                    <div className="flex items-start gap-3.5">
-                      <span className="text-xs font-black text-slate-300 group-hover:text-[#FB4F14]">0{index + 1}</span>
-                      <div className="space-y-1">
-                        <span className="text-[10px] font-extrabold text-[#FB4F14] uppercase tracking-wider">{item.category || 'Analysis'}</span>
-                        <h4 className="text-xs font-bold text-slate-900 group-hover:text-[#FB4F14] transition-colors leading-snug line-clamp-2">
-                          {item.title}
-                        </h4>
-                      </div>
-                    </div>
-                  </Link>
-                ))
-              )}
-            </div>
-          </div>
-        </div>
-
+        <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight leading-tight">
+          {article.title}
+        </h1>
       </div>
+
+      {/* Share Toolbar */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-y border-slate-800/80 py-3 px-4 bg-slate-900/40 rounded-2xl">
+        <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Share This Take</span>
+        
+        <div className="flex items-center gap-2">
+          <button 
+            onClick={handleCopyLink} 
+            className="px-3.5 py-1.5 text-xs font-bold bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-200 rounded-xl transition-colors cursor-pointer"
+          >
+            {copied ? '✓ Copied!' : '📋 Copy Link'}
+          </button>
+
+          <a 
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}&url=${encodeURIComponent(currentUrl)}`} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="px-3.5 py-1.5 text-xs font-bold bg-slate-800 border border-slate-700 hover:bg-slate-700 text-white rounded-xl transition-colors"
+          >
+            𝕏 Share
+          </a>
+        </div>
+      </div>
+
+      {/* Main Content Body (Structured for readability) */}
+      <div className="prose prose-invert max-w-none text-slate-300 leading-relaxed space-y-6 text-base sm:text-lg pt-2">
+        {article.content}
+      </div>
+
+      {/* Author / Community Signoff Box */}
+      <div className="bg-slate-900/60 border border-slate-800 p-6 rounded-2xl mt-12 space-y-2">
+        <h4 className="text-sm font-bold text-white">About Bengals Origins</h4>
+        <p className="text-xs text-slate-400 leading-relaxed">
+          Written by a dedicated fan sharing real-time game reactions, thoughts, and opinions with the community. Got feedback or want to debate a point? Hit us up on social media!
+        </p>
+      </div>
+
     </main>
   );
 }
