@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
@@ -12,6 +12,19 @@ export default function ArticlePage() {
   const [article, setArticle] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+  const shareMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close share menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (shareMenuRef.current && !shareMenuRef.current.contains(event.target as Node)) {
+        setShareOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     async function loadArticle() {
@@ -42,7 +55,10 @@ export default function ArticlePage() {
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => {
+      setCopied(false);
+      setShareOpen(false);
+    }, 1500);
   };
 
   if (loading) {
@@ -90,66 +106,75 @@ export default function ArticlePage() {
         </h1>
       </div>
 
-      {/* Industry Standard Icon Share Toolbar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-y border-slate-800/80 py-3 px-4 bg-slate-900/40 rounded-2xl">
-        <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Share This Take</span>
+      {/* Clean Interactive Share Drawer/Dropdown Bar */}
+      <div className="flex items-center justify-between border-y border-slate-800/80 py-3 px-4 bg-slate-900/40 rounded-2xl relative">
+        <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Spread The Word</span>
         
-        <div className="flex items-center flex-wrap gap-2">
+        <div className="relative" ref={shareMenuRef}>
           <button 
-            onClick={handleCopyLink} 
-            title="Copy Link"
-            className="p-2 sm:px-3 sm:py-1.5 text-xs font-bold bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-200 rounded-xl transition-colors cursor-pointer flex items-center gap-1.5"
+            onClick={() => setShareOpen(!shareOpen)}
+            className="px-4 py-2 text-xs font-extrabold bg-[#FB4F14] hover:bg-orange-600 text-white rounded-xl transition-all shadow-sm flex items-center gap-2 cursor-pointer"
           >
-            <span>📋</span> <span className="hidden sm:inline">{copied ? 'Copied!' : 'Copy'}</span>
+            <span>📤 Share Article</span>
+            <span className={`transform transition-transform text-[10px] ${shareOpen ? 'rotate-180' : ''}`}>▼</span>
           </button>
 
-          <a 
-            href={`https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            title="Share on X"
-            className="p-2 sm:px-3 sm:py-1.5 text-xs font-bold bg-slate-800 border border-slate-700 hover:bg-slate-700 text-white rounded-xl transition-colors flex items-center gap-1.5"
-          >
-            <span>𝕏</span> <span className="hidden sm:inline">X</span>
-          </a>
+          {/* Popup Dropdown Menu for Mobile & Desktop */}
+          {shareOpen && (
+            <div className="absolute right-0 mt-2 w-56 bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl p-2 z-50 space-y-1 animate-in fade-in zoom-in-95 duration-150">
+              
+              <button 
+                onClick={handleCopyLink} 
+                className="w-full text-left px-3 py-2 text-xs font-bold text-slate-200 hover:bg-slate-800 rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer"
+              >
+                <span>📋</span> <span>{copied ? 'Link Copied!' : 'Copy Link'}</span>
+              </button>
 
-          <a 
-            href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            title="Share on Facebook"
-            className="p-2 sm:px-3 sm:py-1.5 text-xs font-bold bg-slate-800 border border-slate-700 hover:bg-slate-700 text-blue-400 rounded-xl transition-colors flex items-center gap-1.5"
-          >
-            <span>f</span> <span className="hidden sm:inline">Facebook</span>
-          </a>
+              <a 
+                href={`https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-full text-left px-3 py-2 text-xs font-bold text-slate-200 hover:bg-slate-800 rounded-xl flex items-center gap-2.5 transition-colors"
+              >
+                <span>𝕏</span> <span>Share on X</span>
+              </a>
 
-          <a 
-            href={`https://www.reddit.com/submit?url=${encodedUrl}&title=${encodedTitle}`} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            title="Share on Reddit"
-            className="p-2 sm:px-3 sm:py-1.5 text-xs font-bold bg-slate-800 border border-slate-700 hover:bg-slate-700 text-orange-400 rounded-xl transition-colors flex items-center gap-1.5"
-          >
-            <span>r/</span> <span className="hidden sm:inline">Reddit</span>
-          </a>
+              <a 
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-full text-left px-3 py-2 text-xs font-bold text-slate-200 hover:bg-slate-800 rounded-xl flex items-center gap-2.5 transition-colors"
+              >
+                <span>f</span> <span>Share on Facebook</span>
+              </a>
 
-          <a 
-            href={`https://api.whatsapp.com/send?text=${encodedTitle}%20-%20%20${encodedUrl}`} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            title="Share on WhatsApp"
-            className="p-2 sm:px-3 sm:py-1.5 text-xs font-bold bg-slate-800 border border-slate-700 hover:bg-slate-700 text-green-400 rounded-xl transition-colors flex items-center gap-1.5"
-          >
-            <span>💬</span> <span className="hidden sm:inline">WhatsApp</span>
-          </a>
+              <a 
+                href={`https://www.reddit.com/submit?url=${encodedUrl}&title=${encodedTitle}`} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-full text-left px-3 py-2 text-xs font-bold text-slate-200 hover:bg-slate-800 rounded-xl flex items-center gap-2.5 transition-colors"
+              >
+                <span>r/</span> <span>Share on Reddit</span>
+              </a>
 
-          <a 
-            href={`mailto:?subject=${encodedTitle}&body=Check%20out%20this%20breakdown:%20${encodedUrl}`} 
-            title="Share via Email"
-            className="p-2 sm:px-3 sm:py-1.5 text-xs font-bold bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-300 rounded-xl transition-colors flex items-center gap-1.5"
-          >
-            <span>✉️</span> <span className="hidden sm:inline">Email</span>
-          </a>
+              <a 
+                href={`https://api.whatsapp.com/send?text=${encodedTitle}%20-%20%20${encodedUrl}`} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-full text-left px-3 py-2 text-xs font-bold text-slate-200 hover:bg-slate-800 rounded-xl flex items-center gap-2.5 transition-colors"
+              >
+                <span>💬</span> <span>Send via WhatsApp</span>
+              </a>
+
+              <a 
+                href={`mailto:?subject=${encodedTitle}&body=Check%20out%20this%20breakdown:%20${encodedUrl}`} 
+                className="w-full text-left px-3 py-2 text-xs font-bold text-slate-200 hover:bg-slate-800 rounded-xl flex items-center gap-2.5 transition-colors"
+              >
+                <span>✉️</span> <span>Share via Email</span>
+              </a>
+
+            </div>
+          )}
         </div>
       </div>
 
@@ -158,7 +183,7 @@ export default function ArticlePage() {
         {article.content}
       </div>
 
-      {/* INDUSTRY STANDARD HORIZONTAL AD BANNER (High visibility for sponsors, looks great on mobile & desktop) */}
+      {/* Industry Standard Horizontal Ad Banner */}
       <div className="my-8 bg-slate-900/60 border border-slate-800 rounded-2xl p-6 text-center space-y-2">
         <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-500">Advertisement</span>
         <div className="py-6 bg-slate-950/40 rounded-xl border border-slate-800/60 text-slate-500 text-xs font-medium">
