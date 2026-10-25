@@ -40,7 +40,7 @@ function WriteForm() {
           setCategory(data.category || 'Bengals Jungle');
           setExcerpt(data.excerpt || '');
           setContent(data.content || '');
-          setReadTime(data.read_time || '5 min read');
+          setReadTime(data.read_time || data.readTime || '5 min read');
         } else if (error) {
           console.error('Error loading post for edit:', error);
         }
