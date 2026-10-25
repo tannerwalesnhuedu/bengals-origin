@@ -85,29 +85,29 @@ function WriteForm() {
 
     const slug = generateSlug(title);
 
-    // Payload supporting both database naming conventions for read time
-    const articlePayload = { 
+    // Explicitly mapping both versions for Supabase
+    const articleData = { 
       title, 
       slug, 
       category, 
       excerpt, 
       content, 
-      read_time: readTime,
-      readTime: readTime 
+      read_time: readTime,   // standard snake_case column
+      readTime: readTime     // alternative camelCase column
     };
 
     try {
       if (editId) {
         const { error: updateError } = await supabase
           .from('articles')
-          .update(articlePayload)
+          .update(articleData)
           .eq('id', editId);
 
         if (updateError) throw updateError;
       } else {
         const { error: dbError } = await supabase
           .from('articles')
-          .insert([articlePayload]);
+          .insert([articleData]);
 
         if (dbError) throw dbError;
 
