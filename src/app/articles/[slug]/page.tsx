@@ -108,9 +108,12 @@ export default function ArticlePage() {
       {/* Article Header info */}
       <div className="space-y-4 border-b border-slate-200 pb-6">
         <div className="flex items-center gap-3 text-xs font-semibold text-slate-500">
-          <span className="text-[#FB4F14] uppercase tracking-wider text-xs font-extrabold">
-          {article.category || 'Fan Thoughts'}
-          </span>
+        <Link 
+  href={`/?category=${encodeURIComponent(article.category || 'Bengals Jungle')}`}
+  className="text-[#FB4F14] uppercase tracking-wider text-xs font-extrabold hover:underline cursor-pointer"
+>
+  {article.category || 'Fan Thoughts'}
+</Link>
           <span>•</span>
           <span>{new Date(article.created_at).toLocaleDateString()}</span>
           <span>•</span>
