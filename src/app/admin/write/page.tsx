@@ -16,11 +16,12 @@ export default function AdminWritePage() {
   const [excerpt, setExcerpt] = useState('');
   const [content, setContent] = useState('');
   const [readTime, setReadTime] = useState('5 min read');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error' | 'draftSaved'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [checkingAuth, setCheckingAuth] = useState(true);
   const router = useRouter();
 
+  // Load saved draft from localStorage on initial load
   useEffect(() => {
     async function checkUser() {
       const { data: { session } } = await supabase.auth.getSession();
@@ -28,6 +29,19 @@ export default function AdminWritePage() {
         router.push('/admin/login');
       } else {
         setCheckingAuth(false);
+        const savedDraft = localStorage.getItem('havocshift_draft');
+        if (savedDraft) {
+          try {
+            const parsed = JSON.parse(savedDraft);
+            setTitle(parsed.title || '');
+            setCategory(parsed.category || 'Bengals Jungle');
+            setExcerpt(parsed.excerpt || '');
+            setContent(parsed.content || '');
+            setReadTime(parsed.readTime || '5 min read');
+          } catch (e) {
+            console.error('Failed to load draft', e);
+          }
+        }
       }
     }
     checkUser();
@@ -37,8 +51,16 @@ export default function AdminWritePage() {
     return text.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
   };
 
-  // Helper to count words dynamically
   const wordCount = content.trim() === '' ? 0 : content.trim().split(/\s+/).length;
+
+  // Manual Draft Save Handler
+  const handleSaveDraft = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const draftData = { title, category, excerpt, content, readTime };
+    localStorage.setItem('havocshift_draft', JSON.stringify(draftData));
+    setStatus('draftSaved');
+    setTimeout(() => setStatus('idle'), 3000);
+  };
 
   const handlePublish = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,6 +81,9 @@ export default function AdminWritePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, excerpt, slug }),
       });
+
+      // Clear local draft upon successful publish
+      localStorage.removeItem('havocshift_draft');
 
       setStatus('success');
       setTitle('');
@@ -104,6 +129,12 @@ export default function AdminWritePage() {
       {status === 'success' && (
         <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-semibold">
           ✓ Breakdown published successfully and email broadcast sent!
+        </div>
+      )}
+
+      {status === 'draftSaved' && (
+        <div className="p-4 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-sm font-semibold">
+          💾 Draft saved locally to your browser!
         </div>
       )}
 
@@ -155,9 +186,22 @@ export default function AdminWritePage() {
           <textarea value={content} onChange={(e) => setContent(e.target.value)} rows={8} required className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14]" />
         </div>
 
-        <button type="submit" disabled={status === 'loading'} className="w-full py-3 font-bold text-sm bg-[#FB4F14] text-white rounded-xl hover:bg-orange-600 transition-colors shadow-sm cursor-pointer">
-          {status === 'loading' ? 'Publishing & Sending Emails...' : 'Publish Breakdown & Email Subscribers'}
-        </button>
+        <div className="flex gap-3">
+          <button 
+            type="button" 
+            onClick={handleSaveDraft}
+            className="w-1/3 py-3 font-bold text-sm bg-slate-200 text-slate-700 rounded-xl hover:bg-slate-300 transition-colors shadow-sm cursor-pointer"
+          >
+            💾 Save Draft
+          </button>
+          <button 
+            type="submit" 
+            disabled={status === 'loading'} 
+            className="w-2/3 py-3 font-bold text-sm bg-[#FB4F14] text-white rounded-xl hover:bg-orange-600 transition-colors shadow-sm cursor-pointer"
+          >
+            {status === 'loading' ? 'Publishing & Sending Emails...' : 'Publish Breakdown & Email Subscribers'}
+          </button>
+        </div>
       </form>
     </div>
   );
