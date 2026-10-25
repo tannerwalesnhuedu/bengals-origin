@@ -13,9 +13,9 @@ export default function Footer() {
 
         {/* Right side: Policy & Navigation Links */}
         <div className="flex flex-wrap items-center justify-center gap-6 font-semibold">
-          <Link href="/privacy" className="font-bold text-white">Privacy Policy</Link>
-          <Link href="/terms" className="font-bold text-white">Terms of Service</Link>
-          <Link href="/contact" className="font-bold text-white">Contact Us</Link>
+          <Link href="/privacy" className="font-bold text-white hover:text-[#FB4F14] transition-colors font-medium">Privacy Policy</Link>
+          <Link href="/terms" className="font-bold text-white hover:text-[#FB4F14] transition-colors">Terms of Service</Link>
+          <Link href="/contact" className="font-bold text-white hover:text-[#FB4F14] transition-colors">Contact Us</Link>
         </div>
 
       </div>

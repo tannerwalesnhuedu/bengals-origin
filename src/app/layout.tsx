@@ -39,7 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </Link>
 
             <nav className="flex items-center gap-6">
-              <Link href="/" className="font-bold text-white">
+              <Link href="/" className="font-bold text-white hover:text-[#FB4F14] transition-colors">
                 Home
               </Link>
             </nav>
