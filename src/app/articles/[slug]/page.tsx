@@ -189,9 +189,6 @@ export default function ArticlePage() {
         </div>
       </div>
 
-import ReactMarkdown from 'react-markdown';
-
-// ... inside your article viewing component:
 <div className="text-slate-800 text-base prose max-w-none">
   <ReactMarkdown>{article.content}</ReactMarkdown>
 </div>
