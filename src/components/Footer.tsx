@@ -13,7 +13,6 @@ export default function Footer() {
 
         {/* Right side: Policy & Navigation Links */}
         <div className="flex flex-wrap items-center justify-center gap-6 font-semibold">
-          <Link href="/" className="font-bold text-white">Home</Link>
           <Link href="/privacy" className="font-bold text-white">Privacy Policy</Link>
           <Link href="/terms" className="font-bold text-white">Terms of Service</Link>
           <Link href="/contact" className="font-bold text-white">Contact Us</Link>
