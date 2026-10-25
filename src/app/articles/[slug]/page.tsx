@@ -190,31 +190,33 @@ export default function ArticlePage() {
         </div>
       </div>
 
-<div className="text-slate-800 text-base space-y-2 whitespace-pre-line">
+<div className="text-slate-800 text-base space-y-3 whitespace-pre-line">
   {article.content.split('\n').map((line: string, index: number) => {
     const trimmed = line.trim();
     
-    // 1. Handle full-line bold headers (e.g., **Injuries report**)
+    // 1. Handle full-line headers wrapped in either * or ** (e.g., *References* or **Injuries report**)
     if (
       (trimmed.startsWith('**') && trimmed.endsWith('**')) || 
-      (trimmed.startsWith('*') && trimmed.endsWith('*') && !trimmed.includes(' * '))
+      (trimmed.startsWith('*') && trimmed.endsWith('*') && !trimmed.slice(1, -1).includes('*'))
     ) {
       return (
-        <strong key={index} className="block font-bold text-slate-900 text-lg mt-4 mb-1">
+        <strong key={index} className="block font-bold text-slate-900 text-lg mt-6 mb-2">
           {trimmed.replace(/\*/g, '')}
         </strong>
       );
     }
 
-    // 2. Handle paragraphs with inline **bold** phrases (e.g., **4 pressures**)
-    const parts = line.split(/(\*\*.*?\*\*)/g);
+    // 2. Handle paragraphs with inline bold text (both **double** and *single* asterisks)
+    // This regex splits by either **text** or *text*
+    const parts = line.split(/(\*\*.*?\*\*|\*[^*]+\*)/g);
+    
     return (
       <p key={index} className="leading-relaxed">
         {parts.map((part, i) => {
-          if (part.startsWith('**') && part.endsWith('**')) {
+          if ((part.startsWith('**') && part.endsWith('**')) || (part.startsWith('*') && part.endsWith('*'))) {
             return (
               <strong key={i} className="font-bold text-slate-900">
-                {part.replace(/\*\*/g, '')}
+                {part.replace(/\*/g, '')}
               </strong>
             );
           }
