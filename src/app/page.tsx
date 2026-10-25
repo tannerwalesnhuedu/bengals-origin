@@ -66,9 +66,9 @@ export default function Home() {
             className="block group bg-white border border-slate-200 hover:border-[#FB4F14] transition-all rounded-3xl p-6 sm:p-8 shadow-sm hover:shadow-md"          
             >
             <div className="flex items-center justify-between text-xs">
-              <span className="font-bold text-[#FB4F14] bg-orange-500/10 px-3 py-1 rounded-full uppercase tracking-wider">
-                {featuredArticle.category || 'Bengals Jungle'}
-              </span>
+             <span className="text-[#FB4F14] uppercase tracking-wider text-xs font-extrabold">
+          {featuredArticle.category || 'Fan Thoughts'}
+          </span>
               <span className="text-slate-400">{new Date(featuredArticle.created_at).toLocaleDateString()}</span>
             </div>
             
