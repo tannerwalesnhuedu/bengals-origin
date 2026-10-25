@@ -8,7 +8,12 @@ export default function ContactPage() {
       
       <div className="bg-[#0b0f19] border border-slate-800 p-8 rounded-2xl shadow-xl space-y-3">
         <p className="text-xs font-bold uppercase tracking-wider text-[#FB4F14]">Direct Support Email</p>
-        <p className="text-lg font-bold text-white">support@bengalsorigins.com</p>
+        <a 
+  href="mailto:support@bengalsorigins.com" 
+  className="text-[#FB4F14] font-bold hover:underline"
+>
+  support@bengalsorigins.com
+</a>
       </div>
     </main>
   );
