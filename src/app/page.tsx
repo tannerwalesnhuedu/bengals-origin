@@ -46,9 +46,10 @@ export default function Home() {
       
       {/* Hero Section */}
       <section className="space-y-4 pt-4">
-        <div className="inline-block text-[11px] font-extrabold uppercase tracking-widest text-[#FB4F14] bg-orange-500/10 border border-orange-500/20 px-3 py-1 rounded-md">
-          Unfiltered Fan Perspectives & NFL Takes
-        </div>
+       <div className="inline-flex items-center gap-2 bg-white border border-slate-200 px-4 py-1.5 rounded-full shadow-sm text-xs font-extrabold text-[#FB4F14] uppercase tracking-wider">
+  <span className="w-2 h-2 rounded-full bg-[#FB4F14] animate-pulse"></span>
+  Unfiltered Fan Perspectives & NFL Takes
+</div>
         
         <div className="space-y-3">
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 leading-tight">
