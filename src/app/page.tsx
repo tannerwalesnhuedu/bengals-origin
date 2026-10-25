@@ -60,6 +60,16 @@ export default function Home() {
           </p>
         </div>
 
+        {/* Homepage Ad Banner Slot */}
+<div className="max-w-4xl mx-auto px-4 mb-8">
+  <div className="bg-white border border-slate-200 rounded-2xl p-4 text-center space-y-1.5 shadow-sm">
+    <span className="text-[9px] font-extrabold uppercase tracking-widest text-slate-400">Advertisement</span>
+    <div className="py-4 bg-slate-50 rounded-xl border border-slate-200 text-slate-500 text-xs font-medium">
+      [ Leaderboard Ad Banner Space - Optimized for Homepage ]
+    </div>
+  </div>
+</div>
+
         {/* Featured Hero Card */}
         {activeCategory === 'All' && featuredArticle && (
           <Link 
