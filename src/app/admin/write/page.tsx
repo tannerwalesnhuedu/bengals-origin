@@ -3,7 +3,7 @@
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 
 function WriteForm() {
   const [title, setTitle] = useState('');
@@ -229,5 +229,13 @@ function WriteForm() {
         </div>
       </form>
     </div>
+  );
+}
+// Add this exact export block at the very bottom of your file
+export default function AdminWritePage() {
+  return (
+    <Suspense fallback={<div className="text-center py-20 text-slate-500 text-sm">Loading write portal...</div>}>
+      <WriteForm />
+    </Suspense>
   );
 }
