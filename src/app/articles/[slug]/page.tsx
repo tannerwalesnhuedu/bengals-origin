@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { supabase } from '@/lib/supabase';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
@@ -190,10 +191,10 @@ export default function ArticlePage() {
 
       {/* Article Content Body Card */}
       <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-sm">
-        <div className="text-slate-900 text-base sm:text-lg leading-relaxed space-y-4 whitespace-pre-line">
-          {article.content}
-        </div>
-      </div>
+  <div className="text-slate-900 text-base sm:text-lg leading-relaxed space-y-4 prose">
+    <ReactMarkdown>{article.content}</ReactMarkdown>
+  </div>
+</div>
 
       {/* Advertisement Banner */}
       <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center space-y-2 shadow-sm">
