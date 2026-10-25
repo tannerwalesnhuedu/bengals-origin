@@ -189,9 +189,18 @@ export default function ArticlePage() {
         </div>
       </div>
 
-{/* Update your article content container with whitespace-pre-line */}
-<div className="text-slate-800 text-base whitespace-pre-line leading-relaxed">
-  {article.content}
+<div className="text-slate-800 text-base space-y-2 whitespace-pre-line">
+  {article.content.split('\n').map((line: string, index: number) => {
+    // Check if line is wrapped in ** for bold headers
+    if (line.startsWith('**') && line.endsWith('**')) {
+      return (
+        <strong key={index} className="block font-bold text-slate-900 text-lg mt-4 mb-1">
+          {line.replace(/\*\*/g, '')}
+        </strong>
+      );
+    }
+    return <p key={index}>{line}</p>;
+  })}
 </div>
 
       {/* Advertisement Banner */}
