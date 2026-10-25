@@ -189,9 +189,11 @@ export default function ArticlePage() {
         </div>
       </div>
 
- {/* Fixed (preserves line breaks and spacing you type) */}
-<div className="text-slate-800 text-base whitespace-pre-line">
-  {article.content}
+import ReactMarkdown from 'react-markdown';
+
+// ... inside your article viewing component:
+<div className="text-slate-800 text-base prose max-w-none">
+  <ReactMarkdown>{article.content}</ReactMarkdown>
 </div>
 
       {/* Advertisement Banner */}
