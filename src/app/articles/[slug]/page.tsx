@@ -190,10 +190,9 @@ export default function ArticlePage() {
       </div>
 
       {/* Article Content Body Card */}
-      <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-sm">
-  <div className="text-slate-900 text-base sm:text-lg leading-relaxed space-y-4 prose">
-    <ReactMarkdown>{article.content}</ReactMarkdown>
-  </div>
+     {/* Fixed (preserves line breaks and spacing you type) */}
+<div className="text-slate-800 text-base whitespace-pre-line">
+  {article.content}
 </div>
 
       {/* Advertisement Banner */}
