@@ -189,8 +189,8 @@ export default function ArticlePage() {
         </div>
       </div>
 
-<div className="text-slate-800 text-base prose max-w-none">
-  <ReactMarkdown>{article.content}</ReactMarkdown>
+<div className="text-slate-800 text-base whitespace-pre-line">
+  {article.content}
 </div>
 
       {/* Advertisement Banner */}
