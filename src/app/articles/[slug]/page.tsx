@@ -108,7 +108,7 @@ export default function ArticlePage() {
       {/* Article Header info */}
       <div className="space-y-4 border-b border-slate-200 pb-6">
         <div className="flex items-center gap-3 text-xs font-semibold text-slate-500">
-          <span className="bg-orange-500/10 text-[#FB4F14] border border-orange-500/20 px-3 py-1 rounded-full uppercase tracking-wider text-[10px] font-extrabold">
+          <span className="text-[#FB4F14] uppercase tracking-wider text-xs font-extrabold">
           {article.category || 'Fan Thoughts'}
           </span>
           <span>•</span>
