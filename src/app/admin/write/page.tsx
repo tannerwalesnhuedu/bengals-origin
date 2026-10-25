@@ -1,23 +1,9 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
-import { createClient } from '@supabase/supabase-js';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-);
-
-// Main wrapper with Suspense to satisfy Next.js build prerendering
-export default function AdminWritePage() {
-  return (
-    <Suspense fallback={<div className="text-center py-20 text-slate-500 text-sm">Loading write portal...</div>}>
-      <WriteForm />
-    </Suspense>
-  );
-}
+import { supabase } from "@/lib/supabase";
+import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 function WriteForm() {
   const [title, setTitle] = useState('');
@@ -34,7 +20,7 @@ function WriteForm() {
   const editId = searchParams.get('id');
 
   useEffect(() => {
-    async function checkUser() {
+    async function checkUserAndLoadPost() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         router.push('/admin/login');
@@ -74,7 +60,7 @@ function WriteForm() {
         }
       }
     }
-    checkUser();
+    checkUserAndLoadPost();
   }, [router, editId]);
 
   const generateSlug = (text: string) => {
