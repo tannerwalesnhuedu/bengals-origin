@@ -189,8 +189,7 @@ export default function ArticlePage() {
         </div>
       </div>
 
-      {/* Article Content Body Card */}
-     {/* Fixed (preserves line breaks and spacing you type) */}
+ {/* Fixed (preserves line breaks and spacing you type) */}
 <div className="text-slate-800 text-base whitespace-pre-line">
   {article.content}
 </div>
