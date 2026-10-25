@@ -18,8 +18,16 @@ export default function PrivacyPage() {
             Third-party vendors, including Google, use cookies to serve ads based on a user's prior visits to your website or other websites. Google's use of advertising cookies enables it and its partners to serve ads to your users based on their visit to your sites and/or other sites on the Internet.
           </p>
           <p>
-            Users may opt out of personalized advertising by visiting Ads Settings.
-          </p>
+  Users may opt out of personalized advertising by visiting{' '}
+  <a 
+    href="https://adssettings.google.com" 
+    target="_blank" 
+    rel="noopener noreferrer" 
+    className="text-[#FB4F14] font-bold hover:underline"
+  >
+    Ads Settings
+  </a>.
+</p>
         </div>
 
         <div>
