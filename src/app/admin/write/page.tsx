@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -10,7 +10,16 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 );
 
+// Main wrapper with Suspense to satisfy Next.js build prerendering
 export default function AdminWritePage() {
+  return (
+    <Suspense fallback={<div className="text-center py-20 text-slate-500 text-sm">Loading write portal...</div>}>
+      <WriteForm />
+    </Suspense>
+  );
+}
+
+function WriteForm() {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('Bengals Jungle');
   const [excerpt, setExcerpt] = useState('');
@@ -22,9 +31,8 @@ export default function AdminWritePage() {
   
   const router = useRouter();
   const searchParams = useSearchParams();
-  const editId = searchParams.get('id'); // Checks if we are editing an existing post
+  const editId = searchParams.get('id');
 
-  // Load saved draft from localStorage or fetch post if editing
   useEffect(() => {
     async function checkUser() {
       const { data: { session } } = await supabase.auth.getSession();
@@ -35,7 +43,6 @@ export default function AdminWritePage() {
       setCheckingAuth(false);
 
       if (editId) {
-        // If editing, fetch existing post from Supabase
         const { data, error } = await supabase
           .from('articles')
           .select('*')
@@ -52,7 +59,6 @@ export default function AdminWritePage() {
           console.error('Error loading post for edit:', error);
         }
       } else {
-        // Otherwise check for local draft
         const savedDraft = localStorage.getItem('havocshift_draft');
         if (savedDraft) {
           try {
@@ -77,10 +83,9 @@ export default function AdminWritePage() {
 
   const wordCount = content.trim() === '' ? 0 : content.trim().split(/\s+/).length;
 
-  // Manual Draft Save Handler (Only for new posts)
   const handleSaveDraft = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (editId) return; // Don't overwrite local draft while editing an existing post
+    if (editId) return;
     const draftData = { title, category, excerpt, content, readTime };
     localStorage.setItem('havocshift_draft', JSON.stringify(draftData));
     setStatus('draftSaved');
@@ -96,7 +101,6 @@ export default function AdminWritePage() {
 
     try {
       if (editId) {
-        // UPDATE existing post
         const { error: updateError } = await supabase
           .from('articles')
           .update({ title, slug, category, excerpt, content, read_time: readTime })
@@ -104,7 +108,6 @@ export default function AdminWritePage() {
 
         if (updateError) throw updateError;
       } else {
-        // INSERT new post
         const { error: dbError } = await supabase
           .from('articles')
           .insert([{ title, slug, category, excerpt, content, read_time: readTime }]);
@@ -117,7 +120,6 @@ export default function AdminWritePage() {
           body: JSON.stringify({ title, excerpt, slug }),
         });
 
-        // Clear local draft upon successful publish
         localStorage.removeItem('havocshift_draft');
       }
 
@@ -137,8 +139,6 @@ export default function AdminWritePage() {
 
   return (
     <div className="max-w-2xl mx-auto py-10 px-4 space-y-6">
-      
-      {/* Header with Switch to Manage Posts & Sign Out */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div>
           <span className="text-[#FB4F14] font-extrabold text-xs uppercase tracking-wider">Secure Admin Portal</span>
