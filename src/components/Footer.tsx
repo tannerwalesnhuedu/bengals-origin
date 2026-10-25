@@ -13,10 +13,10 @@ export default function Footer() {
 
         {/* Right side: Policy & Navigation Links */}
         <div className="flex flex-wrap items-center justify-center gap-6 font-semibold">
-          <Link href="/" className="hover:text-[#FB4F14] transition-colors">Home</Link>
-          <Link href="/privacy" className="hover:text-[#FB4F14] transition-colors">Privacy Policy</Link>
-          <Link href="/terms" className="hover:text-[#FB4F14] transition-colors">Terms of Service</Link>
-          <Link href="/contact" className="hover:text-[#FB4F14] transition-colors">Contact Us</Link>
+          <Link href="/" className="font-bold text-white">Home</Link>
+          <Link href="/privacy" className="font-bold text-white">Privacy Policy</Link>
+          <Link href="/terms" className="font-bold text-white">Terms of Service</Link>
+          <Link href="/contact" className="font-bold text-white">Contact Us</Link>
         </div>
 
       </div>
