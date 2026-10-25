@@ -189,8 +189,22 @@ export default function ArticlePage() {
         </div>
       </div>
 
-<div className="text-slate-800 text-base whitespace-pre-line">
-  {article.content}
+<div className="text-slate-800 text-base space-y-2">
+  {article.content.split('\n').map((line: string, index: number) => (
+    <p key={index} className={line.trim() === '' ? 'h-4' : ''}>
+      {line.startsWith('* ') ? (
+        <span className="flex items-start gap-2">
+          <span>•</span> <span>{line.replace('* ', '')}</span>
+        </span>
+      ) : line.startsWith('**') && line.endsWith('**') ? (
+        <strong className="block font-bold text-slate-900 mt-4 mb-1">
+          {line.replace(/\*\*/g, '')}
+        </strong>
+      ) : (
+        line
+      )}
+    </p>
+  ))}
 </div>
 
       {/* Advertisement Banner */}
