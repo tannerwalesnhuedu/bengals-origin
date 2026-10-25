@@ -118,10 +118,19 @@ export default function AdminWritePage() {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Category Tag</label>
-            <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="e.g., Bengals Jungle" required className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14]" />
-            <span className="text-[10px] text-slate-400 mt-1 block">Match exact name: Bengals Jungle, Around the NFL, AFC North, The Fan Lounge</span>
-          </div>
+  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Category Tag</label>
+  <select 
+    value={category} 
+    onChange={(e) => setCategory(e.target.value)} 
+    className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14] cursor-pointer"
+  >
+    <option value="Bengals Jungle">Bengals Jungle</option>
+    <option value="Around the NFL">Around the NFL</option>
+    <option value="AFC North">AFC North</option>
+    <option value="The Fan Lounge">The Fan Lounge</option>
+  </select>
+  <span className="text-[10px] text-slate-400 mt-1 block">Select exact category for proper filtering</span>
+</div>
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Read Time</label>
             <input type="text" value={readTime} onChange={(e) => setReadTime(e.target.value)} placeholder="e.g., 5 min read" required className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14]" />
