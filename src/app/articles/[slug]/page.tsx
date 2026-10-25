@@ -119,9 +119,7 @@ export default function ArticlePage() {
           <span>{new Date(article.created_at).toLocaleDateString()}</span>
           <span>•</span>
           {/* Update this line in your public article reader file */}
-<span className="text-slate-500 font-medium">
-  {article.read_time || '5 min read'}
-</span>
+<span className="text-slate-500 font-medium">{article.read_time}</span>
         </div>
         
         <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight leading-tight">
