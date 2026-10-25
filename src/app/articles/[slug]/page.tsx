@@ -195,10 +195,10 @@ export default function ArticlePage() {
         </div>
       </div>
 
-      {/* Main Content Body */}
-      <div className="prose prose-invert max-w-none text-slate-300 leading-relaxed space-y-6 text-base sm:text-lg pt-2 wrap-break-word">
-        {article.content}
-      </div>
+      {/* Example for your article content container */}
+<div className="text-slate-900 text-base sm:text-lg leading-relaxed space-y-4">
+  {article.content}
+</div>
 
       {/* Industry Standard Horizontal Ad Banner */}
       <div className="my-8 bg-slate-900/60 border border-slate-800 rounded-2xl p-6 text-center space-y-2">
