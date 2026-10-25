@@ -85,18 +85,29 @@ function WriteForm() {
 
     const slug = generateSlug(title);
 
+    // Payload supporting both database naming conventions for read time
+    const articlePayload = { 
+      title, 
+      slug, 
+      category, 
+      excerpt, 
+      content, 
+      read_time: readTime,
+      readTime: readTime 
+    };
+
     try {
       if (editId) {
         const { error: updateError } = await supabase
           .from('articles')
-          .update({ title, slug, category, excerpt, content, read_time: readTime })
+          .update(articlePayload)
           .eq('id', editId);
 
         if (updateError) throw updateError;
       } else {
         const { error: dbError } = await supabase
           .from('articles')
-          .insert([{ title, slug, category, excerpt, content, read_time: readTime }]);
+          .insert([articlePayload]);
 
         if (dbError) throw dbError;
 
@@ -231,7 +242,7 @@ function WriteForm() {
     </div>
   );
 }
-// Add this exact export block at the very bottom of your file
+
 export default function AdminWritePage() {
   return (
     <Suspense fallback={<div className="text-center py-20 text-slate-500 text-sm">Loading write portal...</div>}>
