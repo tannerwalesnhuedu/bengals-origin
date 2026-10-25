@@ -32,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0b0f19] text-slate-100 min-h-screen flex flex-col selection:bg-[#FB4F14] selection:text-white`}>
 
         {/* Sticky Professional Navigation */}
-        <header className="bg-[#0b0f19]/90 backdrop-blur-md border-b border-slate-800 text-white sticky top-0 z-50">
+        <header className="bg-slate-950 text-slate-400 border-t border-slate-800 mt-20">
           <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
             <Link href="/" className="font-black text-lg tracking-wider flex items-center gap-2">
               <span className="text-[#FB4F14]">BENGALS</span> ORIGINS
