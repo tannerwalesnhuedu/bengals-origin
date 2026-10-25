@@ -37,6 +37,9 @@ export default function AdminWritePage() {
     return text.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
   };
 
+  // Helper to count words dynamically
+  const wordCount = content.trim() === '' ? 0 : content.trim().split(/\s+/).length;
+
   const handlePublish = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('loading');
@@ -118,19 +121,19 @@ export default function AdminWritePage() {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Category Tag</label>
-  <select 
-    value={category} 
-    onChange={(e) => setCategory(e.target.value)} 
-    className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14] cursor-pointer"
-  >
-    <option value="Bengals Jungle">Bengals Jungle</option>
-    <option value="Around the NFL">Around the NFL</option>
-    <option value="AFC North">AFC North</option>
-    <option value="The Fan Lounge">The Fan Lounge</option>
-  </select>
-  <span className="text-[10px] text-slate-400 mt-1 block">Select exact category for proper filtering</span>
-</div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Category Tag</label>
+            <select 
+              value={category} 
+              onChange={(e) => setCategory(e.target.value)} 
+              className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14] cursor-pointer"
+            >
+              <option value="Bengals Jungle">Bengals Jungle</option>
+              <option value="Around the NFL">Around the NFL</option>
+              <option value="AFC North">AFC North</option>
+              <option value="The Fan Lounge">The Fan Lounge</option>
+            </select>
+            <span className="text-[10px] text-slate-400 mt-1 block">Select exact category for proper filtering</span>
+          </div>
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Read Time</label>
             <input type="text" value={readTime} onChange={(e) => setReadTime(e.target.value)} placeholder="e.g., 5 min read" required className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14]" />
@@ -143,7 +146,12 @@ export default function AdminWritePage() {
         </div>
 
         <div>
-          <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Full Content</label>
+          <div className="flex justify-between items-center mb-1">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">Full Content</label>
+            <span className="text-xs font-semibold text-slate-500">
+              Word Count: <span className="text-[#FB4F14] font-bold">{wordCount}</span>
+            </span>
+          </div>
           <textarea value={content} onChange={(e) => setContent(e.target.value)} rows={8} required className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14]" />
         </div>
 
