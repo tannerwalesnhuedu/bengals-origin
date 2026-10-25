@@ -194,7 +194,7 @@ export default function ArticlePage() {
   {article.content.split('\n').map((line: string, index: number) => {
     const trimmed = line.trim();
     
-    // 1. Handle full-line headers wrapped in either * or ** (e.g., *References* or **Injuries report**)
+    // Catch-all for section headers wrapped in * or ** (e.g., *References* or **Injuries report**)
     if (
       (trimmed.startsWith('**') && trimmed.endsWith('**')) || 
       (trimmed.startsWith('*') && trimmed.endsWith('*') && !trimmed.slice(1, -1).includes('*'))
@@ -206,10 +206,8 @@ export default function ArticlePage() {
       );
     }
 
-    // 2. Handle paragraphs with inline bold text (both **double** and *single* asterisks)
-    // This regex splits by either **text** or *text*
+    // Paragraphs with inline bold text
     const parts = line.split(/(\*\*.*?\*\*|\*[^*]+\*)/g);
-    
     return (
       <p key={index} className="leading-relaxed">
         {parts.map((part, i) => {
