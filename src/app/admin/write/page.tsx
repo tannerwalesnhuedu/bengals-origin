@@ -92,8 +92,7 @@ function WriteForm() {
       category, 
       excerpt, 
       content, 
-      read_time: readTime,   // standard snake_case column
-      readTime: readTime     // alternative camelCase column
+      read_time: readTime,
     };
 
     try {
