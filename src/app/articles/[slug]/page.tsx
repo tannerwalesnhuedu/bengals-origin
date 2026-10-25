@@ -191,11 +191,13 @@ export default function ArticlePage() {
 
 <div className="text-slate-800 text-base space-y-2 whitespace-pre-line">
   {article.content.split('\n').map((line: string, index: number) => {
-    // If a line starts and ends with **, make it a bold header
-    if (line.startsWith('**') && line.endsWith('**')) {
+    const trimmed = line.trim();
+    
+    // Check for bold headers wrapped in ** or *
+    if ((trimmed.startsWith('**') && trimmed.endsWith('**')) || (trimmed.startsWith('*') && trimmed.endsWith('*') && !trimmed.includes(' * '))) {
       return (
         <strong key={index} className="block font-bold text-slate-900 text-lg mt-4 mb-1">
-          {line.replace(/\*\*/g, '')}
+          {trimmed.replace(/\*/g, '')}
         </strong>
       );
     }
