@@ -136,6 +136,13 @@ export default function ManageArticlesPage() {
                   View
                 </Link>
 
+              <Link 
+  href={`/admin/write?id=${article.id}`}
+  className="px-3.5 py-2 text-xs font-bold bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-200 rounded-xl transition-colors"
+>
+  Edit
+</Link>
+
                 <button 
                   onClick={() => {
                     setSelectedArticle(article);

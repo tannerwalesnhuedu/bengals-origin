@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
 const supabase = createClient(
@@ -19,16 +19,40 @@ export default function AdminWritePage() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error' | 'draftSaved'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [checkingAuth, setCheckingAuth] = useState(true);
+  
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const editId = searchParams.get('id'); // Checks if we are editing an existing post
 
-  // Load saved draft from localStorage on initial load
+  // Load saved draft from localStorage or fetch post if editing
   useEffect(() => {
     async function checkUser() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         router.push('/admin/login');
+        return;
+      }
+      setCheckingAuth(false);
+
+      if (editId) {
+        // If editing, fetch existing post from Supabase
+        const { data, error } = await supabase
+          .from('articles')
+          .select('*')
+          .eq('id', editId)
+          .single();
+
+        if (data) {
+          setTitle(data.title || '');
+          setCategory(data.category || 'Bengals Jungle');
+          setExcerpt(data.excerpt || '');
+          setContent(data.content || '');
+          setReadTime(data.read_time || '5 min read');
+        } else if (error) {
+          console.error('Error loading post for edit:', error);
+        }
       } else {
-        setCheckingAuth(false);
+        // Otherwise check for local draft
         const savedDraft = localStorage.getItem('havocshift_draft');
         if (savedDraft) {
           try {
@@ -45,7 +69,7 @@ export default function AdminWritePage() {
       }
     }
     checkUser();
-  }, [router]);
+  }, [router, editId]);
 
   const generateSlug = (text: string) => {
     return text.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
@@ -53,9 +77,10 @@ export default function AdminWritePage() {
 
   const wordCount = content.trim() === '' ? 0 : content.trim().split(/\s+/).length;
 
-  // Manual Draft Save Handler
+  // Manual Draft Save Handler (Only for new posts)
   const handleSaveDraft = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (editId) return; // Don't overwrite local draft while editing an existing post
     const draftData = { title, category, excerpt, content, readTime };
     localStorage.setItem('havocshift_draft', JSON.stringify(draftData));
     setStatus('draftSaved');
@@ -70,26 +95,36 @@ export default function AdminWritePage() {
     const slug = generateSlug(title);
 
     try {
-      const { error: dbError } = await supabase
-        .from('articles')
-        .insert([{ title, slug, category, excerpt, content, read_time: readTime }]);
+      if (editId) {
+        // UPDATE existing post
+        const { error: updateError } = await supabase
+          .from('articles')
+          .update({ title, slug, category, excerpt, content, read_time: readTime })
+          .eq('id', editId);
 
-      if (dbError) throw dbError;
+        if (updateError) throw updateError;
+      } else {
+        // INSERT new post
+        const { error: dbError } = await supabase
+          .from('articles')
+          .insert([{ title, slug, category, excerpt, content, read_time: readTime }]);
 
-      await fetch('/api/broadcast', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, excerpt, slug }),
-      });
+        if (dbError) throw dbError;
 
-      // Clear local draft upon successful publish
-      localStorage.removeItem('havocshift_draft');
+        await fetch('/api/broadcast', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, excerpt, slug }),
+        });
+
+        // Clear local draft upon successful publish
+        localStorage.removeItem('havocshift_draft');
+      }
 
       setStatus('success');
-      setTitle('');
-      setCategory('Bengals Jungle');
-      setExcerpt('');
-      setContent('');
+      setTimeout(() => {
+        router.push('/admin/manage');
+      }, 1500);
     } catch (err: any) {
       setStatus('error');
       setErrorMessage(err.message || 'Something went wrong.');
@@ -107,7 +142,9 @@ export default function AdminWritePage() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div>
           <span className="text-[#FB4F14] font-extrabold text-xs uppercase tracking-wider">Secure Admin Portal</span>
-          <h1 className="text-2xl font-black text-slate-900 mt-1">Publish New Game Breakdown</h1>
+          <h1 className="text-2xl font-black text-slate-900 mt-1">
+            {editId ? '✏️ Edit Game Breakdown' : 'Publish New Game Breakdown'}
+          </h1>
         </div>
         
         <div className="flex items-center gap-3">
@@ -128,7 +165,7 @@ export default function AdminWritePage() {
 
       {status === 'success' && (
         <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-semibold">
-          ✓ Breakdown published successfully and email broadcast sent!
+          ✓ Breakdown successfully {editId ? 'updated' : 'published and email broadcast sent'}! Redirecting...
         </div>
       )}
 
@@ -183,23 +220,25 @@ export default function AdminWritePage() {
               Word Count: <span className="text-[#FB4F14] font-bold">{wordCount}</span>
             </span>
           </div>
-          <textarea value={content} onChange={(e) => setContent(e.target.value)} rows={8} required className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14]" />
+          <textarea value={content} onChange={(e) => setContent(e.target.value)} rows={12} required className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14]" />
         </div>
 
         <div className="flex gap-3">
-          <button 
-            type="button" 
-            onClick={handleSaveDraft}
-            className="w-1/3 py-3 font-bold text-sm bg-slate-200 text-slate-700 rounded-xl hover:bg-slate-300 transition-colors shadow-sm cursor-pointer"
-          >
-            💾 Save Draft
-          </button>
+          {!editId && (
+            <button 
+              type="button" 
+              onClick={handleSaveDraft}
+              className="w-1/3 py-3 font-bold text-sm bg-slate-200 text-slate-700 rounded-xl hover:bg-slate-300 transition-colors shadow-sm cursor-pointer"
+            >
+              💾 Save Draft
+            </button>
+          )}
           <button 
             type="submit" 
             disabled={status === 'loading'} 
-            className="w-2/3 py-3 font-bold text-sm bg-[#FB4F14] text-white rounded-xl hover:bg-orange-600 transition-colors shadow-sm cursor-pointer"
+            className={`${editId ? 'w-full' : 'w-2/3'} py-3 font-bold text-sm bg-[#FB4F14] text-white rounded-xl hover:bg-orange-600 transition-colors shadow-sm cursor-pointer`}
           >
-            {status === 'loading' ? 'Publishing & Sending Emails...' : 'Publish Breakdown & Email Subscribers'}
+            {status === 'loading' ? 'Saving Changes...' : editId ? 'Save Changes' : 'Publish Breakdown & Email Subscribers'}
           </button>
         </div>
       </form>
