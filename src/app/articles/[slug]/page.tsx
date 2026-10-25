@@ -193,8 +193,11 @@ export default function ArticlePage() {
   {article.content.split('\n').map((line: string, index: number) => {
     const trimmed = line.trim();
     
-    // 1. Handle whole-line headers (if the entire line is wrapped in **)
-    if ((trimmed.startsWith('**') && trimmed.endsWith('**')) || (trimmed.startsWith('*') && trimmed.endsWith('*') && !trimmed.includes(' * '))) {
+    // 1. Handle full-line bold headers (e.g., **Injuries report**)
+    if (
+      (trimmed.startsWith('**') && trimmed.endsWith('**')) || 
+      (trimmed.startsWith('*') && trimmed.endsWith('*') && !trimmed.includes(' * '))
+    ) {
       return (
         <strong key={index} className="block font-bold text-slate-900 text-lg mt-4 mb-1">
           {trimmed.replace(/\*/g, '')}
@@ -202,13 +205,17 @@ export default function ArticlePage() {
       );
     }
 
-    // 2. Handle paragraphs with inline **bold** words using regex
+    // 2. Handle paragraphs with inline **bold** phrases (e.g., **4 pressures**)
     const parts = line.split(/(\*\*.*?\*\*)/g);
     return (
-      <p key={index}>
+      <p key={index} className="leading-relaxed">
         {parts.map((part, i) => {
           if (part.startsWith('**') && part.endsWith('**')) {
-            return <strong key={i} className="font-bold text-slate-900">{part.replace(/\*\*/g, '')}</strong>;
+            return (
+              <strong key={i} className="font-bold text-slate-900">
+                {part.replace(/\*\*/g, '')}
+              </strong>
+            );
           }
           return part;
         })}
