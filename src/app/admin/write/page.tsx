@@ -216,8 +216,13 @@ function WriteForm() {
               Word Count: <span className="text-[#FB4F14] font-bold">{wordCount}</span>
             </span>
           </div>
-          <textarea value={content} onChange={(e) => setContent(e.target.value)} rows={12} required className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14]" />
-        </div>
+<textarea
+  value={content}
+  onChange={(e) => setContent(e.target.value)}
+  rows={25} // Increase this so you have plenty of room to scroll and type at the bottom
+  className="w-full p-4 border rounded-lg font-mono text-sm"
+  placeholder="Write your article content here..."
+/>        </div>
 
         <div className="flex gap-3">
           {!editId && (
