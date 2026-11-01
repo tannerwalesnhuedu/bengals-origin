@@ -190,11 +190,26 @@ export default function ArticlePage() {
         </div>
       </div>
 
-<div className="text-slate-800 text-base space-y-3 whitespace-pre-line">
+<div className="text-slate-800 text-base space-y-4 leading-relaxed">
   {article.content.split('\n').map((line: string, index: number) => {
     const trimmed = line.trim();
-    
-    // Catch-all for section headers wrapped in * or ** (e.g., *References* or **Injuries report**)
+
+   // Check if line is an image link (even if it wraps lines)
+    if (
+      (trimmed.startsWith('http') || trimmed.endsWith('.jpg') || trimmed.endsWith('.png') || trimmed.endsWith('.jpeg') || trimmed.endsWith('.webp')) &&
+      (trimmed.includes('http') || line.includes('http')) &&
+      (trimmed.includes('.jpg') || trimmed.includes('.png') || trimmed.includes('.jpeg') || trimmed.includes('.webp') || trimmed.includes('wikimedia.org'))
+    ) {
+      // Clean up the URL by removing any accidental line breaks or spaces
+      const cleanUrl = line.replace(/\s+/g, '').trim();
+      return (
+        <div key={index} className="my-6 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+          <img src={cleanUrl} alt="Article embedded image" className="w-full h-auto object-cover max-h-112.5" />
+        </div>
+      );
+    }
+
+    // Section headers wrapped in * or **
     if (
       (trimmed.startsWith('**') && trimmed.endsWith('**')) || 
       (trimmed.startsWith('*') && trimmed.endsWith('*') && !trimmed.slice(1, -1).includes('*'))
@@ -203,6 +218,15 @@ export default function ArticlePage() {
         <strong key={index} className="block font-bold text-slate-900 text-lg mt-6 mb-2">
           {trimmed.replace(/\*/g, '')}
         </strong>
+      );
+    }
+
+    // Bullet points
+    if (trimmed.startsWith('* ') || trimmed.startsWith('- ')) {
+      return (
+        <li key={index} className="ml-6 list-disc">
+          {trimmed.substring(2)}
+        </li>
       );
     }
 
