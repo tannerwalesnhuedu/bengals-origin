@@ -109,17 +109,16 @@ export default function ArticlePage() {
       {/* Article Header info */}
       <div className="space-y-4 border-b border-slate-200 pb-6">
         <div className="flex items-center gap-3 text-xs font-semibold text-slate-500">
-        <Link 
-  href={`/?category=${encodeURIComponent(article.category || 'Bengals Jungle')}`}
-  className="text-[#FB4F14] uppercase tracking-wider text-xs font-extrabold hover:underline cursor-pointer"
->
-  {article.category || 'Fan Thoughts'}
-</Link>
+          <Link 
+            href={`/?category=${encodeURIComponent(article.category || 'Bengals Jungle')}`}
+            className="text-[#FB4F14] uppercase tracking-wider text-xs font-extrabold hover:underline cursor-pointer"
+          >
+            {article.category || 'Fan Thoughts'}
+          </Link>
           <span>•</span>
           <span>{new Date(article.created_at).toLocaleDateString()}</span>
           <span>•</span>
-          {/* Update this line in your public article reader file */}
-<span className="text-slate-500 font-medium">{article.read_time}</span>
+          <span className="text-slate-500 font-medium">{article.read_time || '4 min read'}</span>
         </div>
         
         <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight leading-tight">
@@ -190,39 +189,15 @@ export default function ArticlePage() {
         </div>
       </div>
 
-<div className="text-slate-800 text-base space-y-3 whitespace-pre-line">
-  {article.content.split('\n').map((line: string, index: number) => {
-    const trimmed = line.trim();
-    
-    // Catch-all for section headers wrapped in * or ** (e.g., *References* or **Injuries report**)
-    if (
-      (trimmed.startsWith('**') && trimmed.endsWith('**')) || 
-      (trimmed.startsWith('*') && trimmed.endsWith('*') && !trimmed.slice(1, -1).includes('*'))
-    ) {
-      return (
-        <strong key={index} className="block font-bold text-slate-900 text-lg mt-6 mb-2">
-          {trimmed.replace(/\*/g, '')}
-        </strong>
-      );
-    }
+      {/* Featured Image Banner */}
+      {article.image_url && (
+        <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+          <img src={article.image_url} alt={article.title} className="w-full h-auto object-cover max-h-105" />
+        </div>
+      )}
 
-    // Paragraphs with inline bold text
-    const parts = line.split(/(\*\*.*?\*\*|\*[^*]+\*)/g);
-    return (
-      <p key={index} className="leading-relaxed">
-        {parts.map((part, i) => {
-          if ((part.startsWith('**') && part.endsWith('**')) || (part.startsWith('*') && part.endsWith('*'))) {
-            return (
-              <strong key={i} className="font-bold text-slate-900">
-                {part.replace(/\*/g, '')}
-              </strong>
-            );
-          }
-          return part;
-        })}
-      </p>
-    );
-  })}
+    <div className="text-slate-800 text-base space-y-3 whitespace-pre-line">
+  {article.content}
 </div>
 
       {/* Advertisement Banner */}
