@@ -195,64 +195,59 @@ export default function ArticlePage() {
         </div>
       </div>
 
-      {/* Main Content Body */}
-      <div className="text-slate-800 text-base space-y-4 leading-relaxed">
-        {article.content.split('\n').map((line: string, index: number) => {
-          const trimmed = line.trim();
+     <div className="text-slate-800 text-base space-y-4 leading-relaxed">
+  {article.content.split('\n').map((line: string, index: number) => {
+    const trimmed = line.trim();
 
-          // Check if line is an image link
-          if (
-            (trimmed.startsWith('http') || trimmed.endsWith('.jpg') || trimmed.endsWith('.png') || trimmed.endsWith('.jpeg') || trimmed.endsWith('.webp')) &&
-            (trimmed.includes('http') || line.includes('http')) &&
-            (trimmed.includes('.jpg') || trimmed.includes('.png') || trimmed.includes('.jpeg') || trimmed.includes('.webp') || trimmed.includes('wikimedia.org'))
-          ) {
-            const cleanUrl = line.replace(/\s+/g, '').trim();
-            return (
-              <div key={index} className="my-6 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
-                <img src={cleanUrl} alt="Article embedded image" className="w-full h-auto object-cover max-h-112.5" />
-              </div>
-            );
-          }
+    // 1. CHECK FOR IMAGES FIRST (Must be at the very top of the loop)
+    if (trimmed.startsWith('http') || trimmed.includes('upload.wikimedia.org') || trimmed.includes('.jpg') || trimmed.includes('.png') || trimmed.includes('.webp') || trimmed.includes('.jpeg')) {
+      const cleanUrl = line.replace(/\s+/g, '').trim();
+      return (
+        <div key={index} className="my-6 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+          <img src={cleanUrl} alt="Article embedded image" className="w-full h-auto object-cover max-h-112.5" />
+        </div>
+      );
+    }
 
-          // Section headers wrapped in * or **
-          if (
-            (trimmed.startsWith('**') && trimmed.endsWith('**')) || 
-            (trimmed.startsWith('*') && trimmed.endsWith('*') && !trimmed.slice(1, -1).includes('*'))
-          ) {
+    // 2. Section headers wrapped in * or **
+    if (
+      (trimmed.startsWith('**') && trimmed.endsWith('**')) || 
+      (trimmed.startsWith('*') && trimmed.endsWith('*') && !trimmed.slice(1, -1).includes('*'))
+    ) {
+      return (
+        <strong key={index} className="block font-bold text-slate-900 text-lg mt-6 mb-2">
+          {trimmed.replace(/\*/g, '')}
+        </strong>
+      );
+    }
+
+    // 3. Bullet points
+    if (trimmed.startsWith('* ') || trimmed.startsWith('- ')) {
+      return (
+        <li key={index} className="ml-6 list-disc">
+          {trimmed.substring(2)}
+        </li>
+      );
+    }
+
+    // 4. Paragraphs with inline bold text
+    const parts = line.split(/(\*\*.*?\*\*|\*[^*]+\*)/g);
+    return (
+      <p key={index} className="leading-relaxed">
+        {parts.map((part, i) => {
+          if ((part.startsWith('**') && part.endsWith('**')) || (part.startsWith('*') && part.endsWith('*'))) {
             return (
-              <strong key={index} className="block font-bold text-slate-900 text-lg mt-6 mb-2">
-                {trimmed.replace(/\*/g, '')}
+              <strong key={i} className="font-bold text-slate-900">
+                {part.replace(/\*/g, '')}
               </strong>
             );
           }
-
-          // Bullet points
-          if (trimmed.startsWith('* ') || trimmed.startsWith('- ')) {
-            return (
-              <li key={index} className="ml-6 list-disc">
-                {trimmed.substring(2)}
-              </li>
-            );
-          }
-
-          // Paragraphs with inline bold text
-          const parts = line.split(/(\*\*.*?\*\*|\*[^*]+\*)/g);
-          return (
-            <p key={index} className="leading-relaxed">
-              {parts.map((part, i) => {
-                if ((part.startsWith('**') && part.endsWith('**')) || (part.startsWith('*') && part.endsWith('*'))) {
-                  return (
-                    <strong key={i} className="font-bold text-slate-900">
-                      {part.replace(/\*/g, '')}
-                    </strong>
-                  );
-                }
-                return part;
-              })}
-            </p>
-          );
+          return part;
         })}
-      </div>
+      </p>
+    );
+  })}
+</div>
 
       {/* Advertisement Banner */}
       <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center space-y-2 shadow-sm">
