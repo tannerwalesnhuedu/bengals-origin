@@ -196,9 +196,10 @@ export default function ArticlePage() {
         </div>
       )}
 
-    <div className="text-slate-800 text-base space-y-3 whitespace-pre-line">
-  {article.content}
-</div>
+    <div 
+  className="text-slate-800 text-base space-y-4 leading-relaxed prose max-w-none"
+  dangerouslySetInnerHTML={{ __html: article.content }}
+/>
 
       {/* Advertisement Banner */}
       <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center space-y-2 shadow-sm">
