@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import ReactMarkdown from 'react-markdown';
 import { supabase } from '@/lib/supabase';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
@@ -52,13 +51,6 @@ export default function ArticlePage() {
 
     loadArticle();
   }, [slug]);
-
-  {/* Featured Image Banner */}
-{article.image_url && (
-  <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-sm my-6">
-    <img src={article.image_url} alt={article.title} className="w-full h-auto object-cover max-h-105" />
-  </div>
-)}
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -116,23 +108,29 @@ export default function ArticlePage() {
       {/* Article Header info */}
       <div className="space-y-4 border-b border-slate-200 pb-6">
         <div className="flex items-center gap-3 text-xs font-semibold text-slate-500">
-        <Link 
-  href={`/?category=${encodeURIComponent(article.category || 'Bengals Jungle')}`}
-  className="text-[#FB4F14] uppercase tracking-wider text-xs font-extrabold hover:underline cursor-pointer"
->
-  {article.category || 'Fan Thoughts'}
-</Link>
+          <Link 
+            href={`/?category=${encodeURIComponent(article.category || 'Bengals Jungle')}`}
+            className="text-[#FB4F14] uppercase tracking-wider text-xs font-extrabold hover:underline cursor-pointer"
+          >
+            {article.category || 'Fan Thoughts'}
+          </Link>
           <span>•</span>
           <span>{new Date(article.created_at).toLocaleDateString()}</span>
           <span>•</span>
-          {/* Update this line in your public article reader file */}
-<span className="text-slate-500 font-medium">{article.read_time}</span>
+          <span className="text-slate-500 font-medium">{article.read_time}</span>
         </div>
         
         <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight leading-tight">
           {article.title}
         </h1>
       </div>
+
+      {/* Featured Image Banner (Placed cleanly here) */}
+      {article.image_url && (
+        <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-sm my-6">
+          <img src={article.image_url} alt={article.title} className="w-full h-auto object-cover max-h-105" />
+        </div>
+      )}
 
       {/* Share Bar Card */}
       <div className="flex items-center justify-between border border-slate-200 py-3 px-5 bg-white rounded-2xl relative shadow-sm">
@@ -197,64 +195,64 @@ export default function ArticlePage() {
         </div>
       </div>
 
-<div className="text-slate-800 text-base space-y-4 leading-relaxed">
-  {article.content.split('\n').map((line: string, index: number) => {
-    const trimmed = line.trim();
+      {/* Main Content Body */}
+      <div className="text-slate-800 text-base space-y-4 leading-relaxed">
+        {article.content.split('\n').map((line: string, index: number) => {
+          const trimmed = line.trim();
 
-   // Check if line is an image link (even if it wraps lines)
-    if (
-      (trimmed.startsWith('http') || trimmed.endsWith('.jpg') || trimmed.endsWith('.png') || trimmed.endsWith('.jpeg') || trimmed.endsWith('.webp')) &&
-      (trimmed.includes('http') || line.includes('http')) &&
-      (trimmed.includes('.jpg') || trimmed.includes('.png') || trimmed.includes('.jpeg') || trimmed.includes('.webp') || trimmed.includes('wikimedia.org'))
-    ) {
-      // Clean up the URL by removing any accidental line breaks or spaces
-      const cleanUrl = line.replace(/\s+/g, '').trim();
-      return (
-        <div key={index} className="my-6 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
-          <img src={cleanUrl} alt="Article embedded image" className="w-full h-auto object-cover max-h-112.5" />
-        </div>
-      );
-    }
-
-    // Section headers wrapped in * or **
-    if (
-      (trimmed.startsWith('**') && trimmed.endsWith('**')) || 
-      (trimmed.startsWith('*') && trimmed.endsWith('*') && !trimmed.slice(1, -1).includes('*'))
-    ) {
-      return (
-        <strong key={index} className="block font-bold text-slate-900 text-lg mt-6 mb-2">
-          {trimmed.replace(/\*/g, '')}
-        </strong>
-      );
-    }
-
-    // Bullet points
-    if (trimmed.startsWith('* ') || trimmed.startsWith('- ')) {
-      return (
-        <li key={index} className="ml-6 list-disc">
-          {trimmed.substring(2)}
-        </li>
-      );
-    }
-
-    // Paragraphs with inline bold text
-    const parts = line.split(/(\*\*.*?\*\*|\*[^*]+\*)/g);
-    return (
-      <p key={index} className="leading-relaxed">
-        {parts.map((part, i) => {
-          if ((part.startsWith('**') && part.endsWith('**')) || (part.startsWith('*') && part.endsWith('*'))) {
+          // Check if line is an image link
+          if (
+            (trimmed.startsWith('http') || trimmed.endsWith('.jpg') || trimmed.endsWith('.png') || trimmed.endsWith('.jpeg') || trimmed.endsWith('.webp')) &&
+            (trimmed.includes('http') || line.includes('http')) &&
+            (trimmed.includes('.jpg') || trimmed.includes('.png') || trimmed.includes('.jpeg') || trimmed.includes('.webp') || trimmed.includes('wikimedia.org'))
+          ) {
+            const cleanUrl = line.replace(/\s+/g, '').trim();
             return (
-              <strong key={i} className="font-bold text-slate-900">
-                {part.replace(/\*/g, '')}
+              <div key={index} className="my-6 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+                <img src={cleanUrl} alt="Article embedded image" className="w-full h-auto object-cover max-h-112.5" />
+              </div>
+            );
+          }
+
+          // Section headers wrapped in * or **
+          if (
+            (trimmed.startsWith('**') && trimmed.endsWith('**')) || 
+            (trimmed.startsWith('*') && trimmed.endsWith('*') && !trimmed.slice(1, -1).includes('*'))
+          ) {
+            return (
+              <strong key={index} className="block font-bold text-slate-900 text-lg mt-6 mb-2">
+                {trimmed.replace(/\*/g, '')}
               </strong>
             );
           }
-          return part;
+
+          // Bullet points
+          if (trimmed.startsWith('* ') || trimmed.startsWith('- ')) {
+            return (
+              <li key={index} className="ml-6 list-disc">
+                {trimmed.substring(2)}
+              </li>
+            );
+          }
+
+          // Paragraphs with inline bold text
+          const parts = line.split(/(\*\*.*?\*\*|\*[^*]+\*)/g);
+          return (
+            <p key={index} className="leading-relaxed">
+              {parts.map((part, i) => {
+                if ((part.startsWith('**') && part.endsWith('**')) || (part.startsWith('*') && part.endsWith('*'))) {
+                  return (
+                    <strong key={i} className="font-bold text-slate-900">
+                      {part.replace(/\*/g, '')}
+                    </strong>
+                  );
+                }
+                return part;
+              })}
+            </p>
+          );
         })}
-      </p>
-    );
-  })}
-</div>
+      </div>
 
       {/* Advertisement Banner */}
       <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center space-y-2 shadow-sm">
