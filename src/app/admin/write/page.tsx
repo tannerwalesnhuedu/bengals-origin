@@ -8,6 +8,7 @@ import { useState, useEffect, Suspense } from "react";
 function WriteForm() {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('Bengals Jungle');
+  const [imageUrl, setImageUrl] = useState(''); // Added image URL state
   const [excerpt, setExcerpt] = useState('');
   const [content, setContent] = useState('');
   const [readTime, setReadTime] = useState('5 min read');
@@ -38,6 +39,7 @@ function WriteForm() {
         if (data) {
           setTitle(data.title || '');
           setCategory(data.category || 'Bengals Jungle');
+          setImageUrl(data.image_url || ''); // Load existing image URL if editing
           setExcerpt(data.excerpt || '');
           setContent(data.content || '');
           setReadTime(data.read_time || data.readTime || '5 min read');
@@ -51,6 +53,7 @@ function WriteForm() {
             const parsed = JSON.parse(savedDraft);
             setTitle(parsed.title || '');
             setCategory(parsed.category || 'Bengals Jungle');
+            setImageUrl(parsed.imageUrl || '');
             setExcerpt(parsed.excerpt || '');
             setContent(parsed.content || '');
             setReadTime(parsed.readTime || '5 min read');
@@ -72,7 +75,7 @@ function WriteForm() {
   const handleSaveDraft = (e: React.MouseEvent) => {
     e.preventDefault();
     if (editId) return;
-    const draftData = { title, category, excerpt, content, readTime };
+    const draftData = { title, category, imageUrl, excerpt, content, readTime };
     localStorage.setItem('havocshift_draft', JSON.stringify(draftData));
     setStatus('draftSaved');
     setTimeout(() => setStatus('idle'), 3000);
@@ -85,11 +88,12 @@ function WriteForm() {
 
     const slug = generateSlug(title);
 
-    // Explicitly mapping both versions for Supabase
+    // Payload matching your Supabase columns (including image_url)
     const articleData = { 
       title, 
       slug, 
       category, 
+      image_url: imageUrl, 
       excerpt, 
       content, 
       read_time: readTime,
@@ -196,12 +200,16 @@ function WriteForm() {
               <option value="AFC North">AFC North</option>
               <option value="The Fan Lounge">The Fan Lounge</option>
             </select>
-            <span className="text-[10px] text-slate-400 mt-1 block">Select exact category for proper filtering</span>
           </div>
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Read Time</label>
             <input type="text" value={readTime} onChange={(e) => setReadTime(e.target.value)} placeholder="e.g., 5 min read" required className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14]" />
           </div>
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Featured Image URL (Banner)</label>
+          <input type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="https://... image link" className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14]" />
         </div>
 
         <div>
@@ -216,13 +224,14 @@ function WriteForm() {
               Word Count: <span className="text-[#FB4F14] font-bold">{wordCount}</span>
             </span>
           </div>
-<textarea
-  value={content}
-  onChange={(e) => setContent(e.target.value)}
-  rows={25} // Increase this so you have plenty of room to scroll and type at the bottom
-  className="w-full p-4 border rounded-lg font-mono text-sm"
-  placeholder="Write your article content here..."
-/>        </div>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            rows={22}
+            className="w-full p-4 border border-slate-300 rounded-xl font-mono text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14]"
+            placeholder="Write your article content here..."
+          />
+        </div>
 
         <div className="flex gap-3">
           {!editId && (

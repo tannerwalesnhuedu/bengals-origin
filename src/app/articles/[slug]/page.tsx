@@ -53,6 +53,13 @@ export default function ArticlePage() {
     loadArticle();
   }, [slug]);
 
+  {/* Featured Image Banner */}
+{article.image_url && (
+  <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-sm my-6">
+    <img src={article.image_url} alt={article.title} className="w-full h-auto object-cover max-h-105" />
+  </div>
+)}
+
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);
