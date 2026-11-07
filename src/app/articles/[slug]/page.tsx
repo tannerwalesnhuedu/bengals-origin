@@ -1,7 +1,5 @@
 'use client';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
 import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useParams } from 'next/navigation';
@@ -10,6 +8,9 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 export default function ArticlePage() {
+
+  export const dynamic = 'force-dynamic';
+export const revalidate = 0;
   const params = useParams();
   const slug = params?.slug as string;
 

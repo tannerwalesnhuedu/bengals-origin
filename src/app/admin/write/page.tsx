@@ -136,6 +136,7 @@ function WriteForm() {
       }
 
       setStatus('success');
+      router.refresh();
       setTimeout(() => {
         router.push('/admin/manage');
       }, 1500);
