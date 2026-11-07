@@ -203,9 +203,9 @@ export default function ArticlePage() {
         <ReactMarkdown 
           remarkPlugins={[remarkGfm]}
           components={{
-            img: ({ node, ...props }) => (
-              <div className="my-6 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
-                <img {...props} className="w-full h-auto object-cover max-h-[450px]" alt={props.alt || 'Article image'} />
+           img: ({ node, ...props }) => (
+              <div className="my-6 rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-100 flex items-center justify-center">
+                <img {...props} className="w-full h-auto object-contain max-h-[500px]" alt={props.alt || 'Article image'} />
               </div>
             ),
             p: ({ node, ...props }) => <p className="leading-relaxed my-3" {...props} />,
@@ -236,3 +236,4 @@ export default function ArticlePage() {
     </main>
   );
 }
+
