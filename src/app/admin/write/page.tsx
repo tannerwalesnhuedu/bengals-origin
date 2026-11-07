@@ -247,7 +247,6 @@ function WriteForm() {
   );
 }
 
-defautExport: AdminWritePage... (or standard export default function AdminWritePage)
 export default function AdminWritePage() {
   return (
     <Suspense fallback={<div className="text-center py-20 text-slate-500 text-sm">Loading write portal...</div>}>
