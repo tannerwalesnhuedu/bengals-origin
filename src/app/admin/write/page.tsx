@@ -3,12 +3,12 @@
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useRef } from "react";
 
 function WriteForm() {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('Bengals Jungle');
-  const [imageUrl, setImageUrl] = useState(''); // Added image URL state
+  const [imageUrl, setImageUrl] = useState('');
   const [excerpt, setExcerpt] = useState('');
   const [content, setContent] = useState('');
   const [readTime, setReadTime] = useState('5 min read');
@@ -16,6 +16,7 @@ function WriteForm() {
   const [errorMessage, setErrorMessage] = useState('');
   const [checkingAuth, setCheckingAuth] = useState(true);
   
+  const contentRef = useRef<HTMLTextAreaElement>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
   const editId = searchParams.get('id');
@@ -39,12 +40,10 @@ function WriteForm() {
         if (data) {
           setTitle(data.title || '');
           setCategory(data.category || 'Bengals Jungle');
-          setImageUrl(data.image_url || ''); // Load existing image URL if editing
+          setImageUrl(data.image_url || '');
           setExcerpt(data.excerpt || '');
           setContent(data.content || '');
           setReadTime(data.read_time || data.readTime || '5 min read');
-        } else if (error) {
-          console.error('Error loading post for edit:', error);
         }
       } else {
         const savedDraft = localStorage.getItem('havocshift_draft');
@@ -57,9 +56,7 @@ function WriteForm() {
             setExcerpt(parsed.excerpt || '');
             setContent(parsed.content || '');
             setReadTime(parsed.readTime || '5 min read');
-          } catch (e) {
-            console.error('Failed to load draft', e);
-          }
+          } catch (e) {}
         }
       }
     }
@@ -71,6 +68,23 @@ function WriteForm() {
   };
 
   const wordCount = content.trim() === '' ? 0 : content.trim().split(/\s+/).length;
+
+  const insertImageMarkdown = () => {
+    const url = prompt("Enter the Image URL:");
+    if (!url) return;
+    const altText = prompt("Enter a short description for the image (optional):") || "Article image";
+    
+    const markdownSnippet = `\n![${altText}](${url})\n`;
+    
+    if (contentRef.current) {
+      const start = contentRef.current.selectionStart;
+      const end = contentRef.current.selectionEnd;
+      const updated = content.substring(0, start) + markdownSnippet + content.substring(end);
+      setContent(updated);
+    } else {
+      setContent(content + markdownSnippet);
+    }
+  };
 
   const handleSaveDraft = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -87,8 +101,6 @@ function WriteForm() {
     setErrorMessage('');
 
     const slug = generateSlug(title);
-
-    // Payload matching your Supabase columns (including image_url)
     const articleData = { 
       title, 
       slug, 
@@ -148,38 +160,18 @@ function WriteForm() {
         </div>
         
         <div className="flex items-center gap-3">
-          <Link 
-            href="/admin/manage" 
-            className="px-3.5 py-1.5 text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 rounded-xl transition-colors"
-          >
+          <Link href="/admin/manage" className="px-3.5 py-1.5 text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 rounded-xl transition-colors">
             ⚙️ Manage Posts
           </Link>
-          <button 
-            onClick={async () => { await supabase.auth.signOut(); router.push('/admin/login'); }}
-            className="px-3.5 py-1.5 text-xs font-bold bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl transition-colors cursor-pointer"
-          >
+          <button onClick={async () => { await supabase.auth.signOut(); router.push('/admin/login'); }} className="px-3.5 py-1.5 text-xs font-bold bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl transition-colors cursor-pointer">
             Sign Out
           </button>
         </div>
       </div>
 
-      {status === 'success' && (
-        <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-semibold">
-          ✓ Breakdown successfully {editId ? 'updated' : 'published and email broadcast sent'}! Redirecting...
-        </div>
-      )}
-
-      {status === 'draftSaved' && (
-        <div className="p-4 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-sm font-semibold">
-          💾 Draft saved locally to your browser!
-        </div>
-      )}
-
-      {status === 'error' && (
-        <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm font-semibold">
-          Error: {errorMessage}
-        </div>
-      )}
+      {status === 'success' && <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-semibold">✓ Breakdown successfully saved! Redirecting...</div>}
+      {status === 'draftSaved' && <div className="p-4 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-sm font-semibold">💾 Draft saved locally to your browser!</div>}
+      {status === 'error' && <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm font-semibold">Error: {errorMessage}</div>}
 
       <form onSubmit={handlePublish} className="space-y-4">
         <div>
@@ -190,11 +182,7 @@ function WriteForm() {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Category Tag</label>
-            <select 
-              value={category} 
-              onChange={(e) => setCategory(e.target.value)} 
-              className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14] cursor-pointer"
-            >
+            <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14] cursor-pointer">
               <option value="Bengals Jungle">Bengals Jungle</option>
               <option value="Around the NFL">Around the NFL</option>
               <option value="AFC North">AFC North</option>
@@ -220,11 +208,22 @@ function WriteForm() {
         <div>
           <div className="flex justify-between items-center mb-1">
             <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">Full Content</label>
-            <span className="text-xs font-semibold text-slate-500">
-              Word Count: <span className="text-[#FB4F14] font-bold">{wordCount}</span>
-            </span>
+            <div className="flex items-center gap-3">
+              <button 
+                type="button" 
+                onClick={insertImageMarkdown}
+                className="px-2.5 py-1 text-[11px] font-bold bg-orange-100 hover:bg-orange-200 text-[#FB4F14] rounded-lg transition-colors cursor-pointer"
+              >
+                🖼️ + Insert Image at Cursor
+              </button>
+              <span className="text-xs font-semibold text-slate-500">
+                Word Count: <span className="text-[#FB4F14] font-bold">{wordCount}</span>
+              </span>
+            </div>
           </div>
+          
           <textarea
+            ref={contentRef}
             value={content}
             onChange={(e) => setContent(e.target.value)}
             rows={22}
@@ -235,19 +234,11 @@ function WriteForm() {
 
         <div className="flex gap-3">
           {!editId && (
-            <button 
-              type="button" 
-              onClick={handleSaveDraft}
-              className="w-1/3 py-3 font-bold text-sm bg-slate-200 text-slate-700 rounded-xl hover:bg-slate-300 transition-colors shadow-sm cursor-pointer"
-            >
+            <button type="button" onClick={handleSaveDraft} className="w-1/3 py-3 font-bold text-sm bg-slate-200 text-slate-700 rounded-xl hover:bg-slate-300 transition-colors shadow-sm cursor-pointer">
               💾 Save Draft
             </button>
           )}
-          <button 
-            type="submit" 
-            disabled={status === 'loading'} 
-            className={`${editId ? 'w-full' : 'w-2/3'} py-3 font-bold text-sm bg-[#FB4F14] text-white rounded-xl hover:bg-orange-600 transition-colors shadow-sm cursor-pointer`}
-          >
+          <button type="submit" disabled={status === 'loading'} className={`${editId ? 'w-full' : 'w-2/3'} py-3 font-bold text-sm bg-[#FB4F14] text-white rounded-xl hover:bg-orange-600 transition-colors shadow-sm cursor-pointer`}>
             {status === 'loading' ? 'Saving Changes...' : editId ? 'Save Changes' : 'Publish Breakdown & Email Subscribers'}
           </button>
         </div>
@@ -256,6 +247,7 @@ function WriteForm() {
   );
 }
 
+defautExport: AdminWritePage... (or standard export default function AdminWritePage)
 export default function AdminWritePage() {
   return (
     <Suspense fallback={<div className="text-center py-20 text-slate-500 text-sm">Loading write portal...</div>}>

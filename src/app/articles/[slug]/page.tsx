@@ -4,6 +4,8 @@ import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export default function ArticlePage() {
   const params = useParams();
@@ -125,10 +127,10 @@ export default function ArticlePage() {
         </h1>
       </div>
 
-      {/* Featured Image Banner (Placed cleanly here) */}
+      {/* Featured Image Banner */}
       {article.image_url && (
         <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-sm my-6">
-          <img src={article.image_url} alt={article.title} className="w-full h-auto object-cover max-h-105" />
+          <img src={article.image_url} alt={article.title} className="w-full h-auto object-cover max-h-[420px]" />
         </div>
       )}
 
@@ -195,59 +197,24 @@ export default function ArticlePage() {
         </div>
       </div>
 
-     <div className="text-slate-800 text-base space-y-4 leading-relaxed">
-  {article.content.split('\n').map((line: string, index: number) => {
-    const trimmed = line.trim();
-
-    // 1. CHECK FOR IMAGES FIRST (Must be at the very top of the loop)
-    if (trimmed.startsWith('http') || trimmed.includes('upload.wikimedia.org') || trimmed.includes('.jpg') || trimmed.includes('.png') || trimmed.includes('.webp') || trimmed.includes('.jpeg')) {
-      const cleanUrl = line.replace(/\s+/g, '').trim();
-      return (
-        <div key={index} className="my-6 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
-          <img src={cleanUrl} alt="Article embedded image" className="w-full h-auto object-cover max-h-112.5" />
-        </div>
-      );
-    }
-
-    // 2. Section headers wrapped in * or **
-    if (
-      (trimmed.startsWith('**') && trimmed.endsWith('**')) || 
-      (trimmed.startsWith('*') && trimmed.endsWith('*') && !trimmed.slice(1, -1).includes('*'))
-    ) {
-      return (
-        <strong key={index} className="block font-bold text-slate-900 text-lg mt-6 mb-2">
-          {trimmed.replace(/\*/g, '')}
-        </strong>
-      );
-    }
-
-    // 3. Bullet points
-    if (trimmed.startsWith('* ') || trimmed.startsWith('- ')) {
-      return (
-        <li key={index} className="ml-6 list-disc">
-          {trimmed.substring(2)}
-        </li>
-      );
-    }
-
-    // 4. Paragraphs with inline bold text
-    const parts = line.split(/(\*\*.*?\*\*|\*[^*]+\*)/g);
-    return (
-      <p key={index} className="leading-relaxed">
-        {parts.map((part, i) => {
-          if ((part.startsWith('**') && part.endsWith('**')) || (part.startsWith('*') && part.endsWith('*'))) {
-            return (
-              <strong key={i} className="font-bold text-slate-900">
-                {part.replace(/\*/g, '')}
-              </strong>
-            );
-          }
-          return part;
-        })}
-      </p>
-    );
-  })}
-</div>
+      {/* Clean Markdown Content Renderer (Preserving all your text and styling) */}
+      <div className="text-slate-800 text-base space-y-4 leading-relaxed">
+        <ReactMarkdown 
+          remarkPlugins={[remarkGfm]}
+          components={{
+            img: ({ node, ...props }) => (
+              <div className="my-6 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+                <img {...props} className="w-full h-auto object-cover max-h-[450px]" alt={props.alt || 'Article image'} />
+              </div>
+            ),
+            p: ({ node, ...props }) => <p className="leading-relaxed my-3" {...props} />,
+            strong: ({ node, ...props }) => <strong className="block font-bold text-slate-900 text-lg mt-6 mb-2" {...props} />,
+            li: ({ node, ...props }) => <li className="ml-6 list-disc my-1" {...props} />,
+          }}
+        >
+          {article.content}
+        </ReactMarkdown>
+      </div>
 
       {/* Advertisement Banner */}
       <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center space-y-2 shadow-sm">
