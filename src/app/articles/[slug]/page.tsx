@@ -7,10 +7,11 @@ import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default function ArticlePage() {
 
-  export const dynamic = 'force-dynamic';
-export const revalidate = 0;
   const params = useParams();
   const slug = params?.slug as string;
 
