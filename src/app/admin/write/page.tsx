@@ -129,13 +129,17 @@ function WriteForm() {
     try {
       if (editId) {
         // 1. Update article
-        await supabase.from('articles').update(articleData).eq('id', editId);
+        const { error: updateError } = await supabase.from('articles').update(articleData).eq('id', editId);
+        if (updateError) throw updateError;
         
         // 2. Upsert or update sources
-        await supabase.from('sources').upsert([
-          { article_slug: slug, title: title, content: sources }
-        ], { onConflict: 'article_slug' });
-
+        if (sources.trim()) {
+          const { error: sourceError } = await supabase.from('sources').upsert(
+            { article_slug: slug, title: title, content: sources },
+            { onConflict: 'article_slug' }
+          );
+          if (sourceError) throw sourceError;
+        }
       } else {
         // 1. Insert article
         const { error: dbError } = await supabase.from('articles').insert([articleData]);
@@ -143,9 +147,10 @@ function WriteForm() {
 
         // 2. Insert sources
         if (sources.trim()) {
-          await supabase.from('sources').insert([
+          const { error: sourceError } = await supabase.from('sources').insert([
             { article_slug: slug, title: title, content: sources }
           ]);
+          if (sourceError) throw sourceError;
         }
 
         await fetch('/api/broadcast', {
