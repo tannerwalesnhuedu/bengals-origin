@@ -10,8 +10,8 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 // INDUSTRY-STANDARD SEO METADATA FOR GOOGLE RANKINGS
 export const metadata: Metadata = {
   title: {
-    default: "Bengals Origins | Fan Perspectives & Game Insights",
-    template: "%s | Bengals Origins"
+    default: "Havoc Shift | Fan Perspectives & Game Insights",
+    template: "%s | Havoc Shift"
   },
   description: "Unfiltered Cincinnati Bengals fan perspectives, game reactions, roster thoughts, and community breakdowns.",
   keywords: ["Cincinnati Bengals", "Bengals blog", "NFL fan analysis", "Bengals game reactions"],
@@ -20,8 +20,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://bengals-origin.vercel.app",
-    siteName: "Bengals Origins",
-    title: "Bengals Origins | Fan Perspectives & Game Insights",
+    siteName: "Havoc Shift",
+    title: "Havoc Shift | Fan Perspectives & Game Insights",
     description: "Unfiltered Cincinnati Bengals fan perspectives, game reactions, and roster thoughts.",
   },
 };
