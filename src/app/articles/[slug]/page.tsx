@@ -68,8 +68,8 @@ export default function ArticlePage() {
     if (typeof navigator !== 'undefined' && navigator.share) {
       try {
         await navigator.share({
-          title: article?.title || 'Bengals Origins Breakdown',
-          text: 'Check out this breakdown on Bengals Origins!',
+          title: article?.title || 'Havoc Shift Breakdown',
+          text: 'Check out this breakdown on Havoc Shift!',
           url: window.location.href,
         });
         return;
@@ -229,7 +229,7 @@ export default function ArticlePage() {
 
       {/* Author / Community Signoff Box */}
       <div className="bg-white border border-slate-200 p-6 rounded-2xl space-y-2 shadow-sm">
-        <h4 className="text-sm font-bold text-slate-900">About Bengals Origins</h4>
+        <h4 className="text-sm font-bold text-slate-900">About Havoc Shift</h4>
         <p className="text-xs text-slate-600 leading-relaxed">
           Written by a dedicated fan sharing real-time game reactions, thoughts, and opinions with the community. Got feedback or want to debate a point? Hit us up on social media!
         </p>

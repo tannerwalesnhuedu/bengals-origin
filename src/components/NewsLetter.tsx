@@ -32,7 +32,7 @@ export default function Newsletter() {
     <section className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
       <div className="max-w-xl">
         <span className="text-[#FB4F14] font-extrabold text-xs uppercase tracking-wider">
-          Bengals Origins Newsletter
+          Havoc Shift Newsletter
         </span>
         <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1">
           Get Practice Notes Delivered

@@ -8,7 +8,7 @@ export default function PrivacyPage() {
         <div>
           <h2 className="text-lg font-bold text-white mb-2">Information We Collect</h2>
           <p>
-            Welcome to Bengals Origins. This Privacy Policy outlines how we handle information on our independent analytical publication.
+            Welcome to Havoc Shift. This Privacy Policy outlines how we handle information on our independent analytical publication.
           </p>
         </div>
 

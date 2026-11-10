@@ -8,7 +8,7 @@ export default function TermsPage() {
         <div>
           <h2 className="text-lg font-bold text-white mb-2">1. Introduction</h2>
           <p>
-            Our aim is to keep this Agreement as readable as possible, but in some cases for legal reasons, some of the language is required "legalese". This document governs your access to and use of Bengals Origins.
+            Our aim is to keep this Agreement as readable as possible, but in some cases for legal reasons, some of the language is required "legalese". This document governs your access to and use of Havoc Shift.
           </p>
         </div>
 
@@ -22,7 +22,7 @@ export default function TermsPage() {
         <div>
           <h2 className="text-lg font-bold text-white mb-2">3. Intellectual Property</h2>
           <p>
-            The website and its entire contents are owned by Bengals Origins and protected by intellectual property laws.
+            The website and its entire contents are owned by Havoc Shift and protected by intellectual property laws.
           </p>
         </div>
       </div>

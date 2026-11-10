@@ -26,7 +26,7 @@ export async function POST(request: Request) {
 
     // 2. Send email blast using Resend
     await resend.emails.send({
-      from: 'Bengals Origins <onboarding@resend.dev>',
+      from: 'Havoc Shift <onboarding@resend.dev>',
       to: emailList,
       subject: `New Breakdown: ${title}`,
       html: `
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
           <p style="font-size: 15px; color: #475569; line-height: 1.5;">${excerpt}</p>
           <a href="http://localhost:3000/posts/${slug}" style="display: inline-block; background-color: #FB4F14; color: #ffffff; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px; margin-top: 15px;">Read Full Breakdown →</a>
           <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
-          <p style="font-size: 12px; color: #94a3b8;">You are receiving this because you subscribed to Bengals Origins.</p>
+          <p style="font-size: 12px; color: #94a3b8;">You are receiving this because you subscribed to Havoc Shift.</p>
         </div>
       `,
     });

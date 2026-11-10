@@ -31,14 +31,14 @@ export async function POST(request: Request) {
 
     // 2. Send a confirmation / welcome email via Resend
     await resend.emails.send({
-      from: 'Bengals Origins <onboarding@resend.dev>', // Change to your verified domain later
+      from: 'Havoc Shift <onboarding@resend.dev>', // Change to your verified domain later
       to: [email],
-      subject: 'Welcome to Bengals Origins — The Blueprint',
+      subject: 'Welcome to Havoc Shift — The Blueprint',
       html: `
         <div style="font-family: sans-serif; color: #1e293b; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #FB4F14;">You're on the list!</h2>
-          <p>Thanks for subscribing to Bengals Origins. You will now receive unfiltered tactical breakdowns and game analysis directly in your inbox the moment they drop.</p>
-          <p style="margin-top: 30px; font-size: 12px; color: #64748b;">Bengals Origins • Independent Film Study</p>
+          <p>Thanks for subscribing to Havoc Shift. You will now receive unfiltered tactical breakdowns and game analysis directly in your inbox the moment they drop.</p>
+          <p style="margin-top: 30px; font-size: 12px; color: #64748b;">Havoc Shift • Independent Film Study</p>
         </div>
       `,
     });

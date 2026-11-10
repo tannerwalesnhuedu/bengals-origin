@@ -53,7 +53,7 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
 
         <div className="space-y-1">
           <span className="text-[#FB4F14] font-extrabold text-xs uppercase tracking-wider">
-            Bengals Origins
+            Havoc Shift
           </span>
           <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
             Never Miss a Breakdown
