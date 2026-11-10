@@ -1,31 +1,102 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import Link from 'next/link';
 
 export default function SourcesPage() {
-  const markdownContent = `
-# Data Sources & References
+  const [sourcesList, setSourcesList] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-Here are the sources and references used for our articles:
-- **Source 1**: Reed, J. (2026, October 25). Five pivotal ravens matchups to watch vs. Bengals. Baltimore Ravens On SI; Raven Country. [View Source Link](https://www.si.com/nfl/ravens/onsi/five-pivotal-ravens-matchups-to-watch-vs-bengals-01m5rf35w5x2)
+  useEffect(() => {
+    async function fetchSources() {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('sources')
+          .select('*')
+          .order('id', { ascending: false });
 
-- **Source 2**: Pro Football Focus. (2026, October 25). Amarius Mims. Pro Football Focus. [View PFF Profile](https://www.pff.com/nfl/players/amarius-mims/146719) 
-  `;
+        if (error) {
+          console.error('Error fetching sources:', error.message);
+        } else if (data) {
+          setSourcesList(data);
+        }
+      } catch (err) {
+        console.error('Unexpected error:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchSources();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-[50vh] flex items-center justify-center text-slate-500 text-sm">
+        Loading sources...
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <ReactMarkdown 
-        components={{
-          // Adds professional blue coloring, underlines, and safe new-tab opening for all links
-          a: ({ node, ...props }) => (
-            <a {...props} className="text-blue-600 hover:text-blue-800 underline font-medium" target="_blank" rel="noopener noreferrer" />
-          ),
-          h1: ({ node, ...props }) => <h1 className="text-3xl font-bold mb-4" {...props} />,
-          p: ({ node, ...props }) => <p className="leading-relaxed my-3" {...props} />,
-          ul: ({ node, ...props }) => <ul className="list-disc pl-5 my-3" {...props} />,
-          li: ({ node, ...props }) => <li className="my-1" {...props} />,
-        }}
-      >
-        {markdownContent}
-      </ReactMarkdown>
-    </div>
+    <main className="max-w-3xl mx-auto py-12 px-4 sm:px-6 space-y-8 text-slate-900">
+      
+      {/* Navigation */}
+      <Link href="/" className="inline-block text-xs font-bold text-[#FB4F14] hover:underline uppercase tracking-wider">
+        ← Back to Home
+      </Link>
+
+      {/* Header */}
+      <div className="border-b border-slate-200 pb-6 space-y-2">
+        <h1 className="text-3xl font-black text-slate-900 tracking-tight">Data Sources & References</h1>
+        <p className="text-slate-600 text-sm">
+          All citations, stats, and research links used across our Havoc Shift game breakdowns.
+        </p>
+      </div>
+
+      {/* Dynamic Sources List */}
+      {sourcesList.length === 0 ? (
+        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-8 text-center text-slate-500 text-sm">
+          No sources added yet.
+        </div>
+      ) : (
+        <div className="space-y-6">
+          {sourcesList.map((item) => (
+            <div key={item.id} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-3">
+              <h2 className="text-lg font-bold text-slate-900">
+                {item.article_slug ? (
+                  <Link href={`/articles/${item.article_slug}`} className="hover:text-[#FB4F14] transition-colors">
+                    {item.title} ↗
+                  </Link>
+                ) : (
+                  item.title
+                )}
+              </h2>
+
+              <div className="text-slate-800 text-sm leading-relaxed">
+                <ReactMarkdown 
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    a: ({ node, ...props }) => (
+                      <a {...props} className="text-blue-600 hover:text-blue-800 underline font-medium" target="_blank" rel="noopener noreferrer" />
+                    ),
+                    p: ({ node, ...props }) => <p className="leading-relaxed my-2" {...props} />,
+                    ul: ({ node, ...props }) => <ul className="list-disc pl-5 my-2 space-y-1" {...props} />,
+                    li: ({ node, ...props }) => <li className="my-1" {...props} />,
+                  }}
+                >
+                  {item.content}
+                </ReactMarkdown>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+    </main>
   );
 }
