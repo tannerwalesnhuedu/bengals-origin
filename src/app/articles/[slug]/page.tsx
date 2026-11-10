@@ -200,17 +200,16 @@ export default function ArticlePage() {
 
       {/* Clean Markdown Content Renderer (Preserving all your text and styling) */}
       <div className="text-slate-800 text-base space-y-4 leading-relaxed">
-        <ReactMarkdown 
+       <ReactMarkdown 
           remarkPlugins={[remarkGfm]}
           components={{
-           img: ({ node, ...props }) => (
-              <div className="my-6 rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-100 flex items-center justify-center">
-                <img {...props} className="w-full h-auto object-contain max-h-125" alt={props.alt || 'Article image'} />
-              </div>
-            ),
+            // Keeps regular stats/words inline inside sentences
+            strong: ({ node, ...props }) => <strong className="font-bold text-slate-900" {...props} />,
+            
+            // Turns ### into clear section subheadings with spacing
+            h3: ({ node, ...props }) => <h3 className="text-xl font-black text-slate-900 mt-8 mb-3" {...props} />,
+            
             p: ({ node, ...props }) => <p className="leading-relaxed my-3" {...props} />,
-           strong: ({ node, ...props }) => <strong className="font-bold text-slate-900" {...props} />,
-            li: ({ node, ...props }) => <li className="ml-6 list-disc my-1" {...props} />,
           }}
         >
           {article.content}
