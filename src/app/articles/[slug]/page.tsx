@@ -131,7 +131,7 @@ export default function ArticlePage() {
       {/* Featured Image Banner */}
       {article.image_url && (
         <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-sm my-6">
-          <img src={article.image_url} alt={article.title} className="w-full h-auto object-cover max-h-[420px]" />
+          <img src={article.image_url} alt={article.title} className="w-full h-auto object-cover max-h-105" />
         </div>
       )}
 
@@ -205,11 +205,11 @@ export default function ArticlePage() {
           components={{
            img: ({ node, ...props }) => (
               <div className="my-6 rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-100 flex items-center justify-center">
-                <img {...props} className="w-full h-auto object-contain max-h-[500px]" alt={props.alt || 'Article image'} />
+                <img {...props} className="w-full h-auto object-contain max-h-125" alt={props.alt || 'Article image'} />
               </div>
             ),
             p: ({ node, ...props }) => <p className="leading-relaxed my-3" {...props} />,
-            strong: ({ node, ...props }) => <strong className="block font-bold text-slate-900 text-lg mt-6 mb-2" {...props} />,
+           strong: ({ node, ...props }) => <strong className="font-bold text-slate-900" {...props} />,
             li: ({ node, ...props }) => <li className="ml-6 list-disc my-1" {...props} />,
           }}
         >
