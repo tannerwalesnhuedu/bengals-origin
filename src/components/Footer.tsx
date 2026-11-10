@@ -8,7 +8,7 @@ export default function Footer() {
         {/* Left side: Branding / Copyright */}
         <div className="space-y-1 text-center sm:text-left">
           <p className="font-bold text-white">Havoc Shift — Fan-Powered Insights</p>
-          <p className="text-slate-500">© {new Date().getFullYear()} All rights reserved. Not officially affiliated with the NFL or Cincinnati Bengals.</p>
+          <p className="text-slate-500">© {new Date().getFullYear()} Not officially affiliated with the NFL or Cincinnati Bengals.</p>
         </div>
 
         {/* Right side: Policy & Navigation Links */}
