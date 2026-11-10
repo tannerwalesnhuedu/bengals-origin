@@ -43,7 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <header className="bg-slate-950 text-slate-400 border-t border-slate-800 sticky top-0 z-50">
           <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
             <Link href="/" className="font-black text-lg tracking-wider flex items-center gap-2">
-              <span className="text-[#FB4F14]">BENGALS</span> ORIGINS
+              <span className="text-[#FB4F14]">Havoc</span> Shift
             </Link>
 
             <nav className="flex items-center gap-6">
