@@ -32,19 +32,33 @@ function WriteForm() {
       setCheckingAuth(false);
 
       if (editId) {
-        const { data, error } = await supabase
+        // 1. Fetch Article Data
+        const { data: articleData } = await supabase
           .from('articles')
           .select('*')
           .eq('id', editId)
           .single();
 
-        if (data) {
-          setTitle(data.title || '');
-          setCategory(data.category || 'Bengals Jungle');
-          setImageUrl(data.image_url || '');
-          setExcerpt(data.excerpt || '');
-          setContent(data.content || '');
-          setReadTime(data.read_time || data.readTime || '5 min read');
+        if (articleData) {
+          setTitle(articleData.title || '');
+          setCategory(articleData.category || 'Bengals Jungle');
+          setImageUrl(articleData.image_url || '');
+          setExcerpt(articleData.excerpt || '');
+          setContent(articleData.content || '');
+          setReadTime(articleData.read_time || articleData.readTime || '5 min read');
+
+          // 2. Fetch Existing Sources for this Article Slug
+          if (articleData.slug) {
+            const { data: sourceData } = await supabase
+              .from('sources')
+              .select('*')
+              .eq('article_slug', articleData.slug)
+              .maybeSingle();
+
+            if (sourceData) {
+              setSources(sourceData.content || '');
+            }
+          }
         }
       } else {
         const savedDraft = localStorage.getItem('havocshift_draft');
