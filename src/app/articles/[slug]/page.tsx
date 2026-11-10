@@ -216,6 +216,10 @@ export default function ArticlePage() {
         </ReactMarkdown>
       </div>
 
+      <Link href="/sources" className="text-xs font-bold text-[#FB4F14] hover:underline">
+  View All Article Data Sources & References ↗
+</Link>
+
       {/* Advertisement Banner */}
       <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center space-y-2 shadow-sm">
         <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Advertisement</span>
