@@ -204,10 +204,10 @@ export default function ArticlePage() {
           remarkPlugins={[remarkGfm]}
           components={{
 
-            img: ({ node, ...props }) => (
+           img: ({ node, ...props }) => (
               <div className="my-6 rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-50">
-          <img {...props} className="w-full h-auto" alt={props.alt || 'Article image'} />
-          </div>
+                <img {...props} className="w-full h-[350px] object-cover" alt={props.alt || 'Article image'} />
+              </div>
             ),
             
             // Makes all markdown links professional blue, underlined, and clickable
