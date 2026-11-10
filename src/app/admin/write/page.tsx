@@ -15,6 +15,7 @@ function WriteForm() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error' | 'draftSaved'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [checkingAuth, setCheckingAuth] = useState(true);
+  const [sources, setSources] = useState('');
   
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const router = useRouter();
@@ -113,18 +114,25 @@ function WriteForm() {
 
     try {
       if (editId) {
-        const { error: updateError } = await supabase
-          .from('articles')
-          .update(articleData)
-          .eq('id', editId);
+        // 1. Update article
+        await supabase.from('articles').update(articleData).eq('id', editId);
+        
+        // 2. Upsert or update sources
+        await supabase.from('sources').upsert([
+          { article_slug: slug, title: title, content: sources }
+        ], { onConflict: 'article_slug' });
 
-        if (updateError) throw updateError;
       } else {
-        const { error: dbError } = await supabase
-          .from('articles')
-          .insert([articleData]);
-
+        // 1. Insert article
+        const { error: dbError } = await supabase.from('articles').insert([articleData]);
         if (dbError) throw dbError;
+
+        // 2. Insert sources
+        if (sources.trim()) {
+          await supabase.from('sources').insert([
+            { article_slug: slug, title: title, content: sources }
+          ]);
+        }
 
         await fetch('/api/broadcast', {
           method: 'POST',
@@ -230,6 +238,23 @@ function WriteForm() {
             rows={22}
             className="w-full p-4 border border-slate-300 rounded-xl font-mono text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14]"
             placeholder="Write your article content here..."
+          />
+        </div>
+
+{/* --- PASTE YOUR SOURCES BOX RIGHT HERE --- */}
+        <div className="space-y-2 pt-4 border-t border-slate-200">
+          <label className="block text-xs font-black uppercase tracking-wider text-slate-700">
+            Article Sources & References (Markdown format)
+          </label>
+          <p className="text-xs text-slate-500">
+            Paste your citations or references here. They will automatically sync to your dedicated sources page under this article's slug!
+          </p>
+          <textarea
+            rows={4}
+            value={sources}
+            onChange={(e) => setSources(e.target.value)}
+            placeholder="- **Source 1**: Pro Football Focus (2026)..."
+            className="w-full p-4 border border-slate-300 rounded-xl font-mono text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14]"
           />
         </div>
 
