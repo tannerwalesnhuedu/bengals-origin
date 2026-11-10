@@ -243,12 +243,16 @@ export default function ArticlePage() {
         >
           {article.content}
         </ReactMarkdown>
-         <Link 
-  href={`/sources?slug=${article.slug}`} 
-  className="text-xs font-bold text-[#FB4F14] hover:underline flex items-center gap-1.5"
->
-  View Data Sources & References for This Article ↗
-</Link>
+      </div>
+
+      {/* 2. Dedicated References Link Box */}
+      <div className="pt-4 border-t border-slate-200">
+        <Link 
+          href={`/sources?slug=${article.slug}`} 
+          className="text-xs font-bold text-[#FB4F14] hover:underline flex items-center gap-1.5"
+        >
+          <span>📚</span> View Data Sources & References for This Article ↗
+        </Link>
       </div>
 
       {/* Advertisement Banner */}
