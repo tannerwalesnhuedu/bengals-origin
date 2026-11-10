@@ -18,6 +18,24 @@ export default function ArticlePage() {
   const [shareOpen, setShareOpen] = useState(false);
   const shareMenuRef = useRef<HTMLDivElement>(null);
 
+  const [articleSource, setArticleSource] = useState<any>(null);
+
+  useEffect(() => {
+    async function loadSources() {
+      if (!slug) return;
+      const { data } = await supabase
+        .from('sources')
+        .select('*')
+        .eq('article_slug', slug)
+        .maybeSingle();
+
+      if (data) {
+        setArticleSource(data);
+      }
+    }
+    loadSources();
+  }, [slug]);
+
   // Close custom menu when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
