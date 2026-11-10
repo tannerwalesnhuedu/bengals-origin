@@ -205,9 +205,8 @@ export default function ArticlePage() {
           components={{
 
             img: ({ node, ...props }) => (
-              <div className="my-6 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
-                <img {...props} className="w-full h-auto object-cover max-h-112.5" alt={props.alt || 'Article image'} />
-              </div>
+              <div className="my-6 rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-50">
+<img {...props} className="w-full h-auto object-cover max-h-[450px]" alt={props.alt || 'Article image'} />              </div>
             ),
             
             // Makes all markdown links professional blue, underlined, and clickable
