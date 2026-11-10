@@ -203,6 +203,10 @@ export default function ArticlePage() {
        <ReactMarkdown 
           remarkPlugins={[remarkGfm]}
           components={{
+            // Makes all markdown links professional blue, underlined, and clickable
+            a: ({ node, ...props }) => (
+              <a {...props} className="text-blue-600 hover:text-blue-800 underline font-medium" target="_blank" rel="noopener noreferrer" />
+            ),
             // Keeps regular stats/words inline inside sentences
             strong: ({ node, ...props }) => <strong className="font-bold text-slate-900" {...props} />,
             
