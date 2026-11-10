@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://bengals-origin.vercel.app",
+    url: "https://havocshift.com",
     siteName: "Havoc Shift",
     title: "Havoc Shift | Fan Perspectives & Game Insights",
     description: "Unfiltered Cincinnati Bengals fan perspectives, game reactions, and roster thoughts.",
