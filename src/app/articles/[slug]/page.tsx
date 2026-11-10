@@ -204,9 +204,9 @@ export default function ArticlePage() {
           remarkPlugins={[remarkGfm]}
           components={{
 
-       img: ({ node, ...props }) => (
-              <div className="my-6 w-full rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-100 flex items-center justify-center">
-                <img {...props} className="w-full h-[350px] object-contain block" alt={props.alt || 'Article image'} />
+      img: ({ node, ...props }) => (
+              <div className="my-6 w-full rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-100 flex items-center justify-center p-4">
+                <img {...props} className="max-h-[350px] w-auto object-contain mx-auto rounded-lg" alt={props.alt || 'Article image'} />
               </div>
             ),
             
