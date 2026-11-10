@@ -204,10 +204,9 @@ export default function ArticlePage() {
           remarkPlugins={[remarkGfm]}
           components={{
 
-            // 👉 ADD THIS IMG BLOCK RIGHT HERE TO FIX PHOTO CROPPING:
             img: ({ node, ...props }) => (
-              <div className="my-6 p-2 rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-50 flex items-center justify-center">
-                <img {...props} className="max-h-112.5 w-auto object-contain mx-auto" alt={props.alt || 'Article image'} />
+              <div className="my-6 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+                <img {...props} className="w-full h-auto object-cover max-h-112.5" alt={props.alt || 'Article image'} />
               </div>
             ),
             
