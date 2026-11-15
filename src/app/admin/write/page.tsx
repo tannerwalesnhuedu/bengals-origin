@@ -16,6 +16,7 @@ function WriteForm() {
   const [errorMessage, setErrorMessage] = useState('');
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [sources, setSources] = useState('');
+  const [imageCredit, setImageCredit] = useState("");
   
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const router = useRouter();
