@@ -146,11 +146,18 @@ export default function ArticlePage() {
         </h1>
       </div>
 
-      {/* Featured Image Banner */}
+      {/* Featured Image Banner with License Caption */}
       {article.image_url && (
-        <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-sm my-6">
-          <img src={article.image_url} alt={article.title} className="w-full h-auto object-cover max-h-105" />
-        </div>
+        <figure className="my-6 space-y-2">
+          <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+            <img src={article.image_url} alt={article.title} className="w-full h-auto object-cover max-h-105" />
+          </div>
+          {article.image_credit && (
+            <figcaption className="text-[11px] text-slate-500 text-right px-1">
+              {article.image_credit}
+            </figcaption>
+          )}
+        </figure>
       )}
 
       {/* Share Bar Card */}
@@ -216,12 +223,11 @@ export default function ArticlePage() {
         </div>
       </div>
 
-      {/* Clean Markdown Content Renderer (Preserving all your text and styling) */}
+      {/* Clean Markdown Content Renderer */}
       <div className="text-slate-800 text-base space-y-4 leading-relaxed">
        <ReactMarkdown 
           remarkPlugins={[remarkGfm]}
           components={{
-            // --- NEW TABLE STYLING ADDED HERE ---
             table: ({ node, ...props }) => (
               <div className="my-6 w-full overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
                 <table className="w-full text-left text-sm text-slate-800 border-collapse" {...props} />
@@ -242,27 +248,17 @@ export default function ArticlePage() {
             td: ({ node, ...props }) => (
               <td className="py-3.5 px-4 align-middle text-slate-700 text-xs sm:text-sm whitespace-nowrap" {...props} />
             ),
-            // ------------------------------------
-
             img: ({ node, ...props }) => (
               <div className="my-6 w-full h-[350px] rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-100">
                 <img {...props} className="w-full h-full object-cover block" alt={props.alt || 'Article image'} />
               </div>
             ),
-
-            // Makes all markdown links professional blue, underlined, and clickable
             a: ({ node, ...props }) => (
               <a {...props} className="text-blue-600 hover:text-blue-800 underline font-medium" target="_blank" rel="noopener noreferrer" />
             ),
-            // Keeps regular stats/words inline inside sentences
             strong: ({ node, ...props }) => <strong className="font-bold text-slate-900" {...props} />,
-            
-            // Turns ### into clear section subheadings with spacing
             h3: ({ node, ...props }) => <h3 className="text-xl font-black text-slate-900 mt-8 mb-3" {...props} />,
-            
-            // Also styles ## subheadings cleanly if you use them
             h2: ({ node, ...props }) => <h2 className="text-2xl font-black text-slate-900 mt-10 mb-3" {...props} />,
-            
             p: ({ node, ...props }) => <p className="leading-relaxed my-3" {...props} />,
           }}
         >
@@ -270,7 +266,7 @@ export default function ArticlePage() {
         </ReactMarkdown>
       </div>
 
-      {/* 2. Dedicated References Link Box */}
+      {/* Dedicated References Link Box */}
       <div className="pt-4 border-t border-slate-200">
         <Link 
           href={`/sources?slug=${article.slug}`} 
