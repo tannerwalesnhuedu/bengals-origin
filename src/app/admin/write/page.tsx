@@ -228,6 +228,20 @@ function WriteForm() {
           <input type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="https://... image link" className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14]" />
         </div>
 
+        {/* --- ADD THIS NEW INPUT FIELD RIGHT HERE --- */}
+<div className="space-y-2">
+  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+    Image Credit / License Caption (Optional)
+  </label>
+  <input 
+    type="text" 
+    value={imageCredit} 
+    onChange={(e) => setImageCredit(e.target.value)} 
+    placeholder="Photo: Wikimedia Commons / CC BY-SA 4.0" 
+    className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#FB4F14]"
+  />
+</div>
+
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Short Excerpt</label>
           <textarea value={excerpt} onChange={(e) => setExcerpt(e.target.value)} rows={2} required className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14]" />
