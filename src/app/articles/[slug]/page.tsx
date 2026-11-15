@@ -221,8 +221,30 @@ export default function ArticlePage() {
        <ReactMarkdown 
           remarkPlugins={[remarkGfm]}
           components={{
+            // --- NEW TABLE STYLING ADDED HERE ---
+            table: ({ node, ...props }) => (
+              <div className="my-6 w-full overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
+                <table className="w-full text-left text-sm text-slate-800 border-collapse" {...props} />
+              </div>
+            ),
+            thead: ({ node, ...props }) => (
+              <thead className="bg-slate-100 border-b border-slate-200 font-bold text-slate-900" {...props} />
+            ),
+            th: ({ node, ...props }) => (
+              <th className="py-3.5 px-4 font-extrabold text-slate-900 text-xs uppercase tracking-wider whitespace-nowrap" {...props} />
+            ),
+            tbody: ({ node, ...props }) => (
+              <tbody className="divide-y divide-slate-200 bg-white" {...props} />
+            ),
+            tr: ({ node, ...props }) => (
+              <tr className="hover:bg-slate-50/80 transition-colors" {...props} />
+            ),
+            td: ({ node, ...props }) => (
+              <td className="py-3.5 px-4 align-middle text-slate-700 text-xs sm:text-sm whitespace-nowrap" {...props} />
+            ),
+            // ------------------------------------
 
-      img: ({ node, ...props }) => (
+            img: ({ node, ...props }) => (
               <div className="my-6 w-full h-[350px] rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-100">
                 <img {...props} className="w-full h-full object-cover block" alt={props.alt || 'Article image'} />
               </div>
@@ -237,6 +259,9 @@ export default function ArticlePage() {
             
             // Turns ### into clear section subheadings with spacing
             h3: ({ node, ...props }) => <h3 className="text-xl font-black text-slate-900 mt-8 mb-3" {...props} />,
+            
+            // Also styles ## subheadings cleanly if you use them
+            h2: ({ node, ...props }) => <h2 className="text-2xl font-black text-slate-900 mt-10 mb-3" {...props} />,
             
             p: ({ node, ...props }) => <p className="leading-relaxed my-3" {...props} />,
           }}
@@ -274,5 +299,3 @@ export default function ArticlePage() {
     </main>
   );
 }
-
-
