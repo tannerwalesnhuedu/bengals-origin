@@ -217,6 +217,7 @@ const articleData = {
               <option value="Bengals Jungle">Bengals Jungle</option>
               <option value="Around the NFL">Around the NFL</option>
               <option value="AFC North">AFC North</option>
+              <option value="Fan Gear">Fan Gear</option>
               <option value="The Fan Lounge">The Fan Lounge</option>
             </select>
           </div>
