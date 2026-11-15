@@ -47,6 +47,7 @@ function WriteForm() {
           setExcerpt(articleData.excerpt || '');
           setContent(articleData.content || '');
           setReadTime(articleData.read_time || articleData.readTime || '5 min read');
+          setImageCredit(articleData.image_credit || '');
 
           // 2. Fetch Existing Sources for this Article Slug
           if (articleData.slug) {
@@ -117,15 +118,16 @@ function WriteForm() {
     setErrorMessage('');
 
     const slug = generateSlug(title);
-    const articleData = { 
-      title, 
-      slug, 
-      category, 
-      image_url: imageUrl, 
-      excerpt, 
-      content, 
-      read_time: readTime,
-    };
+const articleData = {
+  title,
+  slug,
+  category,
+  image_url: imageUrl,
+  image_credit: imageCredit, // <-- Add this line right here
+  excerpt,
+  content,
+  read_time: readTime,
+};
 
     try {
       if (editId) {
@@ -229,7 +231,6 @@ function WriteForm() {
           <input type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="https://... image link" className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#FB4F14]" />
         </div>
 
-        {/* --- ADD THIS NEW INPUT FIELD RIGHT HERE --- */}
 <div className="space-y-2">
   <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
     Image Credit / License Caption (Optional)
