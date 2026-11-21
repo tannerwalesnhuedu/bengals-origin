@@ -16,6 +16,7 @@ export default function Footer() {
           <Link href="/privacy" className="font-bold text-white hover:text-[#FB4F14] transition-colors">Privacy Policy</Link>
           <Link href="/terms" className="font-bold text-white hover:text-[#FB4F14] transition-colors">Terms of Service</Link>
           <Link href="/contact" className="font-bold text-white hover:text-[#FB4F14] transition-colors">Contact Us</Link>
+          <Link href="/affiliate" className="font-bold text-white hover:text-[#FB4F14] transition-colors">Affiliate Disclosure</Link>
         </div>
 
       </div>
