@@ -30,16 +30,15 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <head>
+     <head>
         {/* Google AdSense Verification Script */}
-        <script 
-          async 
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4649018341887192" 
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4649018341887192"
           crossOrigin="anonymous"
         ></script>
-        <Script
-          id="impact-tracking"
-          strategy="afterInteractive"
+        {/* impact.com Verification Script */}
+        <script
           dangerouslySetInnerHTML={{
             __html: `(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A8288692-1b33-4ad9-a510-c010451eac831.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');`,
           }}
