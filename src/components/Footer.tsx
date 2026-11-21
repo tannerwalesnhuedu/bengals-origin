@@ -12,13 +12,12 @@ export default function Footer() {
         </div>
 
         {/* Right side: Policy & Navigation Links */}
-        <div className="flex flex-wrap items-center justify-center gap-6 font-semibold">
+        <div className="flex flex-wrap items-center justify-center gap-6 font-semibold">                
+          <Link href="/affiliate" className="font-bold text-white hover:text-[#FB4F14] transition-colors">Affiliate Disclosure</Link>
           <Link href="/privacy" className="font-bold text-white hover:text-[#FB4F14] transition-colors">Privacy Policy</Link>
           <Link href="/terms" className="font-bold text-white hover:text-[#FB4F14] transition-colors">Terms of Service</Link>
-          <Link href="/contact" className="font-bold text-white hover:text-[#FB4F14] transition-colors">Contact Us</Link>
-          <Link href="/affiliate" className="font-bold text-white hover:text-[#FB4F14] transition-colors">Affiliate Disclosure</Link>
-        </div>
-
+          <Link href="/contact" className="font-bold text-white hover:text-[#FB4F14] transition-colors">Contact Us</Link>        
+          </div>
       </div>
     </footer>
   );
