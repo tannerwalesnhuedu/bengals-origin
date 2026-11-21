@@ -66,7 +66,7 @@ export default function Navbar() {
                 </Link>
 
                 <Link
-                  href="/privacy-policy"
+                  href="/privacy"
                   onClick={() => setMenuOpen(false)}
                   className="block px-3.5 py-2.5 text-xs font-bold text-slate-200 hover:bg-slate-800 hover:text-[#FB4F14] transition-colors"
                 >
@@ -74,7 +74,7 @@ export default function Navbar() {
                 </Link>
 
                 <Link
-                  href="/terms-of-service"
+                  href="/terms"
                   onClick={() => setMenuOpen(false)}
                   className="block px-3.5 py-2.5 text-xs font-bold text-slate-200 hover:bg-slate-800 hover:text-[#FB4F14] transition-colors"
                 >
