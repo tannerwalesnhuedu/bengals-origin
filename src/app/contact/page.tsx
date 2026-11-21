@@ -12,7 +12,7 @@ export default function ContactPage() {
   href="mailto:support@bengalsorigins.com" 
   className="text-[#FB4F14] font-bold hover:underline"
 >
-  support@bengalsorigins.com
+  havocshift@gmail.com
 </a>
       </div>
     </main>
