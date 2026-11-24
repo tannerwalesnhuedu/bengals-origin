@@ -9,7 +9,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('All');
 
-  const categories = ['All', 'Bengals Jungle', 'Around the NFL', 'AFC North', 'The Fan Lounge'];
+  const categories = ['All', 'Bengals Jungle', 'Around the NFL', 'AFC North', 'Fan Gear', 'The Fan Lounge'];
 
   useEffect(() => {
     async function fetchArticles() {

@@ -35,6 +35,14 @@ export default function Navbar() {
             Home
           </Link>
 
+ {/* aout page Navigation */}
+          <Link
+            href="/about"
+            className="text-sm font-bold text-slate-200 hover:text-[#FB4F14] transition-colors"
+          >
+            About
+          </Link>
+
           {/* Policies Dropdown */}
           <div className="relative" ref={dropdownRef}>
             <button
