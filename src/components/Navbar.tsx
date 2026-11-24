@@ -4,11 +4,11 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 
 const CATEGORIES = [
-  { name: 'Bengals Jungle', href: '/category/bengals-jungle', desc: 'Deep dives, previews & roster moves' },
-  { name: 'AFC North', href: '/category/afc-north', desc: 'Rivalry coverage across the division' },
-  { name: 'Around the NFL', href: '/category/around-the-nfl', desc: 'League-wide storylines & reactions' },
-  { name: 'Fan Gear', href: '/category/fan-gear', desc: 'Buying guides & cold-weather stadium tips' },
-  { name: 'The Fan Lounge', href: '/category/the-fan-lounge', desc: 'Unfiltered takes & tailgate debates' },
+  { name: 'Bengals Jungle', href: '/categories/bengals-jungle', desc: 'Deep dives, previews & roster moves' },
+  { name: 'AFC North', href: '/categories/afc-north', desc: 'Rivalry coverage across the division' },
+  { name: 'Around the NFL', href: '/categories/around-the-nfl', desc: 'League-wide storylines & reactions' },
+  { name: 'Fan Gear', href: '/categories/fan-gear', desc: 'Buying guides & cold-weather stadium tips' },
+  { name: 'The Fan Lounge', href: '/categories/the-fan-lounge', desc: 'Unfiltered takes & tailgate debates' },
 ];
 
 export default function Navbar() {
