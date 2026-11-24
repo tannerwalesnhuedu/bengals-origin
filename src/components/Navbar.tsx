@@ -43,6 +43,16 @@ export default function Navbar() {
             About
           </Link>
 
+    <div className="border-t border-slate-800 mt-1 pt-1">
+                  <Link
+                    href="/contact"
+                    onClick={() => setMenuOpen(false)}
+                    className="block px-3.5 py-2 text-xs font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
+                  >
+                    Contact Us
+                  </Link>
+                </div>
+
           {/* Policies Dropdown */}
           <div className="relative" ref={dropdownRef}>
             <button
@@ -89,15 +99,7 @@ export default function Navbar() {
                   Terms of Service
                 </Link>
 
-                <div className="border-t border-slate-800 mt-1 pt-1">
-                  <Link
-                    href="/contact"
-                    onClick={() => setMenuOpen(false)}
-                    className="block px-3.5 py-2 text-xs font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
-                  >
-                    Contact Us
-                  </Link>
-                </div>
+            
               </div>
             )}
           </div>
