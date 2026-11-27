@@ -1,58 +1,99 @@
-import type { Metadata } from "next";
-import Script from "next/script";
-import { Geist, Geist_Mono } from "next/font/google";
-import Header from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import "./globals.css";
+'use client';
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+import { useEffect, useState, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
+import Link from 'next/link';
 
-// INDUSTRY-STANDARD SEO METADATA FOR GOOGLE RANKINGS
-export const metadata: Metadata = {
-  title: {
-    default: "Havoc Shift | Fan Perspectives & Game Insights",
-    template: "%s | Havoc Shift"
-  },
-  description: "Unfiltered Cincinnati Bengals fan perspectives, game reactions, roster thoughts, and community breakdowns.",
-  keywords: ["Cincinnati Bengals", "Bengals blog", "NFL fan analysis", "Bengals game reactions"],
-  robots: { index: true, follow: true },
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: "https://havocshift.com",
-    siteName: "Havoc Shift",
-    title: "Havoc Shift | Fan Perspectives & Game Insights",
-    description: "Unfiltered Cincinnati Bengals fan perspectives, game reactions, and roster thoughts.",
-  },
-};
+const CATEGORIES = ['All', 'Bengals Jungle', 'Around the NFL', 'AFC North', 'Fan Gear', 'The Fan Lounge'];
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+function HomeContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const [articles, setArticles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeCategory, setActiveCategory] = useState('All');
+
+  // Sync activeCategory with ?category= in the URL
+  useEffect(() => {
+    const categoryParam = searchParams.get('category');
+    if (categoryParam && CATEGORIES.includes(categoryParam)) {
+      setActiveCategory(categoryParam);
+    } else {
+      setActiveCategory('All');
+    }
+  }, [searchParams]);
+
+  const handleCategoryChange = (cat: string) => {
+    setActiveCategory(cat);
+    if (cat === 'All') {
+      router.push('/', { scroll: false });
+    } else {
+      router.push(`/?category=${encodeURIComponent(cat)}`, { scroll: false });
+    }
+  };
+
+  useEffect(() => {
+    async function fetchArticles() {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('articles')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching articles:', error.message);
+        } else if (data) {
+          setArticles(data);
+        }
+      } catch (err) {
+        console.error('Unexpected error:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchArticles();
+  }, []);
+
+  const filteredArticles = activeCategory === 'All'
+    ? articles
+    : articles.filter(art => art.category === activeCategory);
+
+  const featuredArticle = articles[0];
+
   return (
-    <html lang="en">
-     <head>
-        {/* Google AdSense Verification Script */}
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4649018341887192"
-          crossOrigin="anonymous"
-        ></script>
-        {/* impact.com Verification Script */}
-        <meta name="impact-site-verification" content="563f61b5-b76d-4699-ab35-e59bd7e4d770" />
-      </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0b0f19] text-slate-100 min-h-screen flex flex-col selection:bg-[#FB4F14] selection:text-white`}>
+    <main className="max-w-4xl mx-auto py-12 px-4 sm:px-6 space-y-10 bg-[#fdfbf7] min-h-screen text-slate-900">
+      {/* ... Hero Section & Featured Hero Card stay identical ... */}
 
-        {/* Sticky Professional Navigation */}
-        <Header />
+      {/* Category Filter Bar */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+        {CATEGORIES.map(cat => (
+          <button
+            key={cat}
+            onClick={() => handleCategoryChange(cat)}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+              activeCategory === cat 
+                ? 'bg-[#FB4F14] text-white shadow-sm' 
+                : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            }`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
 
-        {/* Main Content Blueprint Container */}
-        <div className="grow">
-          {children}
-        </div>
+      {/* ... Article Feed Section stays identical ... */}
+    </main>
+  );
+}
 
-        <Footer />
-
-      </body>
-    </html>
+export default function Home() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#fdfbf7] flex items-center justify-center text-slate-400 text-sm">Loading...</div>}>
+      <HomeContent />
+    </Suspense>
   );
 }

@@ -20,6 +20,13 @@ export default function ArticlePage() {
 
   const [articleSource, setArticleSource] = useState<any>(null);
 
+  const toCategorySlug = (category?: string) =>
+  (category || 'Bengals Jungle')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+
   useEffect(() => {
     async function loadSources() {
       if (!slug) return;
