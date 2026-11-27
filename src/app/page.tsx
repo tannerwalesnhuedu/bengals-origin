@@ -44,19 +44,16 @@ export default function Home() {
   const featuredArticle = articles[0];
 
   return (
+    <>
+    <Navbar></Navbar>
     <main className="max-w-4xl mx-auto py-12 px-4 sm:px-6 space-y-10 bg-[#fdfbf7] min-h-screen text-slate-900">
-
-      
-     <Navbar></Navbar>   
-     
-
       {/* Hero Section */}
       <section className="space-y-4 pt-4">
-       <div className="inline-flex items-center gap-2 bg-white border border-slate-200 px-4 py-1.5 rounded-full shadow-sm text-xs font-extrabold text-[#FB4F14] uppercase tracking-wider">
-  <span className="w-2 h-2 rounded-full bg-[#FB4F14] animate-pulse"></span>
-  Unfiltered Fan Perspectives & NFL Takes
-</div>
-        
+        <div className="inline-flex items-center gap-2 bg-white border border-slate-200 px-4 py-1.5 rounded-full shadow-sm text-xs font-extrabold text-[#FB4F14] uppercase tracking-wider">
+          <span className="w-2 h-2 rounded-full bg-[#FB4F14] animate-pulse"></span>
+          Unfiltered Fan Perspectives & NFL Takes
+        </div>
+
         <div className="space-y-3">
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 leading-tight">
             Cincinnati Roots. Sunday-Wide NFL Reactions.
@@ -67,32 +64,32 @@ export default function Home() {
         </div>
 
         {/* Homepage Ad Banner Slot */}
-<div className="max-w-4xl mx-auto px-4 mb-8">
-  <div className="bg-white border border-slate-200 rounded-2xl p-4 text-center space-y-1.5 shadow-sm">
-    <span className="text-[9px] font-extrabold uppercase tracking-widest text-slate-400">Advertisement</span>
-    <div className="py-4 bg-slate-50 rounded-xl border border-slate-200 text-slate-500 text-xs font-medium">
-      [ Leaderboard Ad Banner Space - Optimized for Homepage ]
-    </div>
-  </div>
-</div>
+        <div className="max-w-4xl mx-auto px-4 mb-8">
+          <div className="bg-white border border-slate-200 rounded-2xl p-4 text-center space-y-1.5 shadow-sm">
+            <span className="text-[9px] font-extrabold uppercase tracking-widest text-slate-400">Advertisement</span>
+            <div className="py-4 bg-slate-50 rounded-xl border border-slate-200 text-slate-500 text-xs font-medium">
+              [ Leaderboard Ad Banner Space - Optimized for Homepage ]
+            </div>
+          </div>
+        </div>
 
         {/* Featured Hero Card */}
         {activeCategory === 'All' && featuredArticle && (
-          <Link 
+          <Link
             href={`/articles/${featuredArticle.slug}`}
-            className="block group bg-white border border-slate-200 hover:border-[#FB4F14] transition-all rounded-3xl p-6 sm:p-8 shadow-sm hover:shadow-md"          
-            >
+            className="block group bg-white border border-slate-200 hover:border-[#FB4F14] transition-all rounded-3xl p-6 sm:p-8 shadow-sm hover:shadow-md"
+          >
             <div className="flex items-center justify-between text-xs">
               <span className="font-bold text-[#FB4F14] bg-orange-500/10 px-3 py-1 rounded-full uppercase tracking-wider">
                 {featuredArticle.category || 'Bengals Jungle'}
               </span>
               <span className="text-slate-400">{new Date(featuredArticle.created_at).toLocaleDateString()}</span>
             </div>
-            
+
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 group-hover:text-[#FB4F14] transition-colors mt-2">
               {featuredArticle.title}
             </h2>
-            
+
             <p className="text-slate-600 text-sm sm:text-base line-clamp-2 leading-relaxed mt-2">
               {featuredArticle.excerpt || featuredArticle.content?.substring(0, 140) + '...'}
             </p>
@@ -112,11 +109,9 @@ export default function Home() {
           <button
             key={cat}
             onClick={() => setActiveCategory(cat)}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-              activeCategory === cat 
-                ? 'bg-[#FB4F14] text-white shadow-sm' 
-                : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-            }`}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${activeCategory === cat
+                ? 'bg-[#FB4F14] text-white shadow-sm'
+                : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}
           >
             {cat}
           </button>
@@ -142,10 +137,10 @@ export default function Home() {
         ) : (
           <div className="grid grid-cols-1 gap-4">
             {filteredArticles.map((article) => (
-              <Link 
-                key={article.id || article.slug} 
+              <Link
+                key={article.id || article.slug}
                 href={`/articles/${article.slug}`}
-                className="block bg-white border border-slate-200 hover:border-[#FB4F14] p-6 rounded-2xl transition-all shadow-sm hover:shadow-md group"              >
+                className="block bg-white border border-slate-200 hover:border-[#FB4F14] p-6 rounded-2xl transition-all shadow-sm hover:shadow-md group">
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-bold text-[#FB4F14] uppercase tracking-wider">{article.category || 'Bengals Jungle'}</span>
                   <span className="text-slate-400">{new Date(article.created_at).toLocaleDateString()}</span>
@@ -167,9 +162,7 @@ export default function Home() {
           </div>
         )}
       </div>
-
-<Footer></Footer>
-
-    </main>
+    </main><Footer></Footer>
+    </>
   );
 }
