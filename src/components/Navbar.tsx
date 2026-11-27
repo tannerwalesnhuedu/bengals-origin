@@ -4,11 +4,11 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 
 const CATEGORIES = [
-  { name: 'Bengals Jungle', href: '/categories/bengals-jungle', desc: 'Deep dives, previews & roster moves' },
-  { name: 'AFC North', href: '/categories/afc-north', desc: 'Rivalry coverage across the division' },
-  { name: 'Around the NFL', href: '/categories/around-the-nfl', desc: 'League-wide storylines & reactions' },
-  { name: 'Fan Gear', href: '/categories/fan-gear', desc: 'Buying guides & cold-weather stadium tips' },
-  { name: 'The Fan Lounge', href: '/categories/the-fan-lounge', desc: 'Unfiltered takes & tailgate debates' },
+  { name: 'Bengals Jungle', href: '/?category=Bengals%20Jungle', desc: 'Deep dives, previews & roster moves' },
+  { name: 'AFC North', href: '/?category=AFC%20North', desc: 'Rivalry coverage across the division' },
+  { name: 'Around the NFL', href: '/?category=Around%20the%20NFL', desc: 'League-wide storylines & reactions' },
+  { name: 'Fan Gear', href: '/?category=Fan%20Gear', desc: 'Buying guides & cold-weather stadium tips' },
+  { name: 'The Fan Lounge', href: '/?category=The%20Fan%20Lounge', desc: 'Unfiltered takes & tailgate debates' },
 ];
 
 export default function Navbar() {
@@ -105,6 +105,13 @@ export default function Navbar() {
             About
           </Link>
 
+          <Link
+            href="/contact"
+            className="text-sm font-bold text-slate-200 hover:text-[#FB4F14] transition-colors"
+          >
+            Contact
+          </Link>
+
           {/* Policies & Info Dropdown */}
           <div className="relative">
             <button
@@ -154,16 +161,6 @@ export default function Navbar() {
                 >
                   Terms of Service
                 </Link>
-
-                <div className="border-t border-slate-800 mt-1 pt-1">
-                  <Link
-                    href="/contact"
-                    onClick={() => setOpenDropdown(null)}
-                    className="block px-3.5 py-2 text-xs font-bold text-slate-300 hover:bg-slate-800 hover:text-[#FB4F14] transition-colors"
-                  >
-                    Contact Us
-                  </Link>
-                </div>
               </div>
             )}
           </div>
@@ -198,6 +195,13 @@ export default function Navbar() {
             >
               About
             </Link>
+            <Link
+              href="/contact"
+              onClick={() => setMobileOpen(false)}
+              className="block text-sm font-bold text-white hover:text-[#FB4F14]"
+            >
+              Contact
+            </Link>
           </div>
 
           <div className="border-t border-slate-800 pt-3">
@@ -231,9 +235,6 @@ export default function Navbar() {
               </Link>
               <Link href="/terms" onClick={() => setMobileOpen(false)}>
                 Terms of Service
-              </Link>
-              <Link href="/contact" onClick={() => setMobileOpen(false)}>
-                Contact Us
               </Link>
             </div>
           </div>
