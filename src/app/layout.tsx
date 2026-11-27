@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
+import "./globals.css";
 
 const CATEGORIES = ['All', 'Bengals Jungle', 'Around the NFL', 'AFC North', 'Fan Gear', 'The Fan Lounge'];
 
