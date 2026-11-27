@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
+import Footer from '@/components/Footer';
+import Navbar from '@/components/Navbar';
 
 export default function Home() {
   const [articles, setArticles] = useState<any[]>([]);
@@ -43,7 +45,11 @@ export default function Home() {
 
   return (
     <main className="max-w-4xl mx-auto py-12 px-4 sm:px-6 space-y-10 bg-[#fdfbf7] min-h-screen text-slate-900">
+
       
+     <Navbar></Navbar>   
+     
+
       {/* Hero Section */}
       <section className="space-y-4 pt-4">
        <div className="inline-flex items-center gap-2 bg-white border border-slate-200 px-4 py-1.5 rounded-full shadow-sm text-xs font-extrabold text-[#FB4F14] uppercase tracking-wider">
@@ -161,6 +167,8 @@ export default function Home() {
           </div>
         )}
       </div>
+
+<Footer></Footer>
 
     </main>
   );
