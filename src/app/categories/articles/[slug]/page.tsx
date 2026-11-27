@@ -8,33 +8,15 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 export default function ArticlePage() {
-
   const params = useParams();
   const slug = params?.slug as string;
 
   const [article, setArticle] = useState<any>(null);
+  const [relatedArticles, setRelatedArticles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const shareMenuRef = useRef<HTMLDivElement>(null);
-
-  const [articleSource, setArticleSource] = useState<any>(null);
-
-  useEffect(() => {
-    async function loadSources() {
-      if (!slug) return;
-      const { data } = await supabase
-        .from('sources')
-        .select('*')
-        .eq('article_slug', slug)
-        .maybeSingle();
-
-      if (data) {
-        setArticleSource(data);
-      }
-    }
-    loadSources();
-  }, [slug]);
 
   // Close custom menu when clicking outside
   useEffect(() => {
@@ -48,7 +30,7 @@ export default function ArticlePage() {
   }, []);
 
   useEffect(() => {
-    async function loadArticle() {
+    async function loadArticleAndRelated() {
       if (!slug) return;
       try {
         setLoading(true);
@@ -62,6 +44,28 @@ export default function ArticlePage() {
           console.error('Supabase error:', error.message);
         } else if (data) {
           setArticle(data);
+
+          // Fetch related articles in the same category (excluding current article)
+          const { data: sameCat } = await supabase
+            .from('articles')
+            .select('id, title, slug, category, created_at, read_time, excerpt, image_url')
+            .eq('category', data.category)
+            .neq('slug', slug)
+            .order('created_at', { ascending: false })
+            .limit(3);
+
+          if (sameCat && sameCat.length >= 2) {
+            setRelatedArticles(sameCat);
+          } else {
+            // Fallback to latest articles across the site if category has fewer than 2 other posts
+            const { data: recent } = await supabase
+              .from('articles')
+              .select('id, title, slug, category, created_at, read_time, excerpt, image_url')
+              .neq('slug', slug)
+              .order('created_at', { ascending: false })
+              .limit(3);
+            setRelatedArticles(recent || []);
+          }
         }
       } catch (err) {
         console.error('Unexpected error:', err);
@@ -70,7 +74,7 @@ export default function ArticlePage() {
       }
     }
 
-    loadArticle();
+    loadArticleAndRelated();
   }, [slug]);
 
   const handleCopyLink = () => {
@@ -99,7 +103,11 @@ export default function ArticlePage() {
   };
 
   if (loading) {
-    return <div className="min-h-[50vh] flex items-center justify-center text-slate-500 text-sm">Loading article...</div>;
+    return (
+      <div className="min-h-[50vh] flex items-center justify-center text-slate-500 text-sm font-medium">
+        Loading breakdown...
+      </div>
+    );
   }
 
   if (!article) {
@@ -117,26 +125,38 @@ export default function ArticlePage() {
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
   const encodedUrl = encodeURIComponent(currentUrl);
   const encodedTitle = encodeURIComponent(article.title);
+  const publisherName = article.author_name || 'Havoc Shift Editorial';
 
   return (
-    <main className="max-w-3xl mx-auto py-12 px-4 sm:px-6 space-y-8 text-slate-900">
+    <main className="max-w-3xl mx-auto py-10 sm:py-12 px-4 sm:px-6 space-y-8 text-slate-900">
       
-      {/* Back Link */}
-      <Link href="/" className="inline-block text-xs font-bold text-[#FB4F14] hover:underline uppercase tracking-wider">
-        ← Back to All Posts
-      </Link>
+      {/* Breadcrumb Navigation */}
+      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-bold text-slate-500">
+        <Link href="/" className="hover:text-[#FB4F14] transition-colors">
+          Home
+        </Link>
+        <span>/</span>
+        <Link
+          href={`/?category=${encodeURIComponent(article.category || 'Bengals Jungle')}`}
+          className="text-[#FB4F14] hover:underline"
+        >
+          {article.category || 'Bengals Jungle'}
+        </Link>
+      </nav>
       
-      {/* Article Header info */}
-      <div className="space-y-4 border-b border-slate-200 pb-6">
-        <div className="flex items-center gap-3 text-xs font-semibold text-slate-500">
+      {/* Article Header & Publisher Byline */}
+      <header className="space-y-4 border-b border-slate-200 pb-6">
+        <div className="flex flex-wrap items-center gap-2.5 text-xs font-semibold text-slate-500">
           <Link 
             href={`/?category=${encodeURIComponent(article.category || 'Bengals Jungle')}`}
-            className="text-[#FB4F14] uppercase tracking-wider text-xs font-extrabold hover:underline cursor-pointer"
+            className="bg-orange-50 text-[#FB4F14] border border-orange-200/80 px-2.5 py-0.5 rounded-md uppercase tracking-wider text-[11px] font-extrabold hover:bg-orange-100 transition-colors"
           >
-            {article.category || 'Fan Thoughts'}
+            {article.category || 'Bengals Jungle'}
           </Link>
           <span>•</span>
-          <span>{new Date(article.created_at).toLocaleDateString()}</span>
+          <time dateTime={article.created_at}>
+            Published {new Date(article.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+          </time>
           <span>•</span>
           <span className="text-slate-500 font-medium">{article.read_time}</span>
         </div>
@@ -144,13 +164,39 @@ export default function ArticlePage() {
         <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight leading-tight">
           {article.title}
         </h1>
-      </div>
+
+        {article.excerpt && (
+          <p className="text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+            {article.excerpt}
+          </p>
+        )}
+
+        {/* Publisher / Author Byline Bar */}
+        <div className="pt-2 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full bg-[#0b0f19] text-white flex items-center justify-center font-black text-xs border border-slate-700">
+              <span className="text-[#FB4F14]">H</span>S
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs font-extrabold text-slate-900">By {publisherName}</span>
+                <span className="text-[10px] font-bold px-1.5 py-0.2 bg-slate-100 text-slate-600 rounded">
+                  Publisher
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500">
+                Havoc Shift • Cincinnati NFL Coverage &amp; Analysis
+              </p>
+            </div>
+          </div>
+        </div>
+      </header>
 
       {/* Featured Image Banner with License Caption */}
       {article.image_url && (
         <figure className="my-6 space-y-2">
-          <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
-            <img src={article.image_url} alt={article.title} className="w-full h-auto object-cover max-h-105" />
+          <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-100">
+            <img src={article.image_url} alt={article.title} className="w-full h-auto object-cover max-h-[420px]" />
           </div>
           {article.image_credit && (
             <figcaption className="text-[11px] text-slate-500 text-right px-1">
@@ -159,6 +205,14 @@ export default function ArticlePage() {
           )}
         </figure>
       )}
+
+      {/* Editorial & Affiliate Transparency Notice (Great for AdSense E-E-A-T) */}
+      <div className="bg-slate-50 border border-slate-200/80 rounded-xl px-4 py-2.5 text-[11px] text-slate-500 leading-relaxed">
+        <strong className="text-slate-700">Editorial Note:</strong> Havoc Shift is an independent fan-powered publication. Some gear or ticket guides may contain affiliate links at no extra cost to you. Read our{' '}
+        <Link href="/affiliate-disclosure" className="text-[#FB4F14] font-semibold hover:underline">
+          Affiliate Disclosure
+        </Link>.
+      </div>
 
       {/* Share Bar Card */}
       <div className="flex items-center justify-between border border-slate-200 py-3 px-5 bg-white rounded-2xl relative shadow-sm">
@@ -224,8 +278,8 @@ export default function ArticlePage() {
       </div>
 
       {/* Clean Markdown Content Renderer */}
-      <div className="text-slate-800 text-base space-y-4 leading-relaxed">
-       <ReactMarkdown 
+      <article className="text-slate-800 text-base space-y-4 leading-relaxed">
+        <ReactMarkdown 
           remarkPlugins={[remarkGfm]}
           components={{
             table: ({ node, ...props }) => (
@@ -264,34 +318,113 @@ export default function ArticlePage() {
         >
           {article.content}
         </ReactMarkdown>
-      </div>
+      </article>
 
       {/* Dedicated References Link Box */}
-      <div className="pt-4 border-t border-slate-200">
+      <div className="pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
         <Link 
           href={`/sources?slug=${article.slug}`} 
           className="text-xs font-bold text-[#FB4F14] hover:underline flex items-center gap-1.5"
         >
-          <span>📚</span> View Data Sources & References for This Article ↗
+          <span>📚</span> View Data Sources &amp; References for This Article ↗
+        </Link>
+        <Link
+          href="/contact"
+          className="text-xs font-semibold text-slate-500 hover:text-slate-800"
+        >
+          Spot an error? Submit a correction
         </Link>
       </div>
 
-      {/* Advertisement Banner */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center space-y-2 shadow-sm">
-        <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Advertisement</span>
-        <div className="py-6 bg-slate-50 rounded-xl border border-slate-200 text-slate-500 text-xs font-medium">
-          [ Leaderboard Ad Banner Space - Optimized for Mobile & Desktop ]
+      {/*
+        ADSENSE SLOT: Uncomment and paste your Google AdSense <ins> code below AFTER AdSense approves your site.
+        Do not leave fake "[ Ad Space ]" placeholders visible during AdSense review.
+      */}
+      {/* <div className="my-6">
+        <span className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 text-center mb-1">Advertisement</span>
+        <ins className="adsbygoogle" style={{ display: 'block' }} data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      </div> */}
+
+      {/* Publisher & Author Signoff Box */}
+      <div className="bg-white border border-slate-200 p-6 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-black uppercase tracking-wider text-[#FB4F14]">About the Publisher</span>
+          </div>
+          <h4 className="text-base font-black text-slate-900">{publisherName} — Havoc Shift</h4>
+          <p className="text-xs text-slate-600 leading-relaxed max-w-xl">
+            Independent Cincinnati Bengals coverage, AFC North rivalry breakdowns, and honest fan gear guides. Every piece is researched using official NFL stats, game film notes, and verified league reports.
+          </p>
         </div>
+        <Link
+          href="/about"
+          className="shrink-0 px-4 py-2 text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white rounded-xl transition-colors"
+        >
+          More About Us →
+        </Link>
       </div>
 
-      {/* Author / Community Signoff Box */}
-      <div className="bg-white border border-slate-200 p-6 rounded-2xl space-y-2 shadow-sm">
-        <h4 className="text-sm font-bold text-slate-900">About Havoc Shift</h4>
-        <p className="text-xs text-slate-600 leading-relaxed">
-          Written by a dedicated fan sharing real-time game reactions, thoughts, and opinions with the community. Got feedback or want to debate a point? Hit us up on social media!
-        </p>
-      </div>
+      {/* Professional Related Articles Section */}
+      {relatedArticles.length > 0 && (
+        <section className="pt-6 border-t border-slate-200 space-y-5">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-black text-slate-900 tracking-tight">
+              More From <span className="text-[#FB4F14]">Havoc Shift</span>
+            </h2>
+            <Link
+              href="/"
+              className="text-xs font-bold text-[#FB4F14] hover:underline"
+            >
+              View All Takes →
+            </Link>
+          </div>
 
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {relatedArticles.map((rel) => (
+              <Link
+                key={rel.id}
+                href={`/articles/${rel.slug}`}
+                className="group bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:border-slate-300 transition-all flex flex-col justify-between"
+              >
+                <div>
+                  {rel.image_url ? (
+                    <div className="h-32 w-full bg-slate-100 overflow-hidden border-b border-slate-100">
+                      <img
+                        src={rel.image_url}
+                        alt={rel.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                  ) : (
+                    <div className="h-2 bg-[#FB4F14]" />
+                  )}
+
+                  <div className="p-4 space-y-2">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#FB4F14]">
+                      {rel.category || 'Bengals Jungle'}
+                    </span>
+                    <h3 className="text-sm font-black text-slate-900 leading-snug group-hover:text-[#FB4F14] transition-colors line-clamp-2">
+                      {rel.title}
+                    </h3>
+                    {rel.excerpt && (
+                      <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                        {rel.excerpt}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="px-4 pb-3 pt-1 flex items-center justify-between text-[11px] font-semibold text-slate-400">
+                  <span>{rel.read_time || '3 min read'}</span>
+                  <span className="text-[#FB4F14] font-bold group-hover:translate-x-0.5 transition-transform">
+                    Read →
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
     </main>
   );
 }
