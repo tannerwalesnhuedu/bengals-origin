@@ -25,27 +25,27 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2.5 text-xs font-semibold">
               <li>
-                <Link href="/?category=Bengals%20Jungle" className="hover:text-[#FB4F14] transition-colors">
+                <Link href="/?category=Bengals%20Jungle#latest-takes" className="hover:text-[#FB4F14] transition-colors">
                   Bengals Jungle
                 </Link>
               </li>
               <li>
-                <Link href="/?category=AFC%20North" className="hover:text-[#FB4F14] transition-colors">
+                <Link href="/?category=AFC%20North#latest-takes" className="hover:text-[#FB4F14] transition-colors">
                   AFC North
                 </Link>
               </li>
               <li>
-                <Link href="/?category=Around%20the%20NFL" className="hover:text-[#FB4F14] transition-colors">
+                <Link href="/?category=Around%20the%20NFL#latest-takes" className="hover:text-[#FB4F14] transition-colors">
                   Around the NFL
                 </Link>
               </li>
               <li>
-                <Link href="/?category=Fan%20Gear" className="hover:text-[#FB4F14] transition-colors">
+                <Link href="/?category=Fan%20Gear#latest-takes" className="hover:text-[#FB4F14] transition-colors">
                   Fan Gear
                 </Link>
               </li>
               <li>
-                <Link href="/?category=The%20Fan%20Lounge" className="hover:text-[#FB4F14] transition-colors">
+                <Link href="/?category=The%20Fan%20Lounge#latest-takes" className="hover:text-[#FB4F14] transition-colors">
                   The Fan Lounge
                 </Link>
               </li>
