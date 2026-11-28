@@ -9,57 +9,18 @@ type ArticleRecord = {
   content: ReactNode;
 };
 
-// Replace this array with your actual articles or import them from your data file
-const ARTICLES: ArticleRecord[] = [];
-
-function toSlug(value: string) {
-  return value
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
-
-async function getArticleBySlug(slug: string): Promise<{
-  title: string;
-  date: string;
-  content: ReactNode;
-} | null> {
-  const normalized = toSlug(decodeURIComponent(slug));
-
-  const match = ARTICLES.find(
-    (item) =>
-      (item.slug ? toSlug(item.slug) === normalized : false) ||
-      toSlug(item.title) === normalized ||
-      String(item.id) === slug
-  );
-
-  if (!match) return null;
-
-  return {
-    title: match.title,
-    date: match.date,
-    content: match.content,
-  };
-}
-
-export default async function ArticlePage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
-  const article = await getArticleBySlug(slug);
-
-  if (!article) {
-    notFound();
-  }
-
-  return (
-    <article className="max-w-3xl mx-auto px-4 py-10">
-      <h1 className="text-3xl font-bold">{article.title}</h1>
-      <p className="text-sm text-gray-500 mt-2">{article.date}</p>
-      <div className="mt-6">{article.content}</div>
-    </article>
-  );
-}
+const ARTICLES: ArticleRecord[] = [
+  {
+    id: 1,
+    slug: "kirk-cousins-is-back-in-minnesota-cousins-wins-first-game-back",
+    title: "Kirk Cousins is Back in Minnesota: Cousins Wins First Game Back",
+    date: "11/15/2026",
+    content: (
+      <p>
+        Vikings got Kirk Cousins back in Minnesota for a second time to help
+        their QB performance.
+      </p>
+    ),
+  },
+  // Add your other articles here...
+];
