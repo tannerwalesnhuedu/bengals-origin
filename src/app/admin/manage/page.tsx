@@ -129,7 +129,7 @@ export default function ManageArticlesPage() {
 
               <div className="flex items-center gap-2 self-end sm:self-center">
                 <Link 
-                  href={`/articles/${article.slug}`}
+                 href={`/${article.slug}`}
                   target="_blank"
                   className="px-3.5 py-2 text-xs font-bold bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-200 rounded-xl transition-colors"
                 >
