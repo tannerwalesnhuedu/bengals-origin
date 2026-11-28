@@ -138,10 +138,10 @@ function HomeContent() {
         {/* Homepage Ad Banner Slot */}
         <div className="bg-white border border-slate-200 rounded-2xl p-4 text-center space-y-1.5 shadow-sm">
           <span className="text-[9px] font-extrabold uppercase tracking-widest text-slate-400">
-            Advertisement
+            
           </span>
           <div className="py-4 bg-slate-50 rounded-xl border border-slate-200 text-slate-500 text-xs font-medium">
-            [ ]
+            
           </div>
         </div>
 
