@@ -4,11 +4,11 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 
 const CATEGORIES = [
-  { name: 'Bengals Jungle', href: '/?category=Bengals%20Jungle', desc: 'Deep dives, previews & roster moves' },
-  { name: 'AFC North', href: '/?category=AFC%20North', desc: 'Rivalry coverage across the division' },
-  { name: 'Around the NFL', href: '/?category=Around%20the%20NFL', desc: 'League-wide storylines & reactions' },
-  { name: 'Fan Gear', href: '/?category=Fan%20Gear', desc: 'Buying guides & cold-weather stadium tips' },
-  { name: 'The Fan Lounge', href: '/?category=The%20Fan%20Lounge', desc: 'Unfiltered takes & tailgate debates' },
+  { name: 'Bengals Jungle', href: '/?category=Bengals%20Jungle#latest-takes', desc: 'Deep dives, previews & roster moves' },
+  { name: 'AFC North', href: '/?category=AFC%20North#latest-takes', desc: 'Rivalry coverage across the division' },
+  { name: 'Around the NFL', href: '/?category=Around%20the%20NFL#latest-takes', desc: 'League-wide storylines & reactions' },
+  { name: 'Fan Gear', href: '/?category=Fan%20Gear#latest-takes', desc: 'Buying guides & cold-weather stadium tips' },
+  { name: 'The Fan Lounge', href: '/?category=The%20Fan%20Lounge#latest-takes', desc: 'Unfiltered takes & tailgate debates' },
 ];
 
 export default function Navbar() {
