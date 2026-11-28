@@ -141,7 +141,7 @@ function HomeContent() {
             Advertisement
           </span>
           <div className="py-4 bg-slate-50 rounded-xl border border-slate-200 text-slate-500 text-xs font-medium">
-            [ Leaderboard Ad Banner Space - Optimized for Homepage ]
+            [ ]
           </div>
         </div>
 
