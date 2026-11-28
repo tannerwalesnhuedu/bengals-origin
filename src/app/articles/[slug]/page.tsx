@@ -98,6 +98,7 @@ export default async function ArticlePage({
   // 2. Format the date (and optional read time) here
   const formattedDate = formatArticleDate(article.date ?? article.created_at);
   const formattedReadTime = formatReadTime(article.read_time);
+const authorName = "[Bengals Fan]"; // ← Put your name here once
 
   return (
     <article className="max-w-3xl mx-auto px-4 py-10">
@@ -120,12 +121,20 @@ export default async function ArticlePage({
         {article.title}
       </h1>
 
-      {/* 3. Render formattedDate in your existing metadata bar */}
+      {/* 1. TOP BYLINE: Added authorName before the date */}
       <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500 mt-3">
-        {formattedDate ? <span>{formattedDate}</span> : null}
+        <span>
+          By <strong className="font-semibold text-slate-800">{authorName}</strong>
+        </span>
+        {formattedDate ? (
+          <>
+            <span>•</span>
+            <span>{formattedDate}</span>
+          </>
+        ) : null}
         {formattedReadTime ? (
           <>
-            {formattedDate ? <span>•</span> : null}
+            <span>•</span>
             <span>{formattedReadTime}</span>
           </>
         ) : null}
@@ -203,6 +212,27 @@ export default async function ArticlePage({
         >
           {article.content ?? ""}
         </ReactMarkdown>
+      </div>
+
+      {/* 2. BOTTOM AUTHOR BIO BOX */}
+      <div className="mt-12 pt-6 border-t border-slate-200 flex items-start gap-4">
+        <div className="h-12 w-12 rounded-full bg-[#FB4F14] text-white font-black flex items-center justify-center shrink-0 text-lg">
+          {authorName.charAt(0)}
+        </div>
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
+            Written By
+          </p>
+          <h3 className="text-base font-extrabold text-slate-900">
+            {authorName}
+          </h3>
+          <p className="text-sm text-slate-600 mt-1 leading-relaxed">
+            Founder of Havoc Shift. Lifelong Bengals fan covering AFC North matchups, game-day gear, and Cincinnati football from the stands.{" "}
+            <Link href="/about" className="text-[#FB4F14] font-semibold hover:underline">
+              More about Havoc Shift →
+            </Link>
+          </p>
+        </div>
       </div>
     </article>
   );
