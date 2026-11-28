@@ -6,6 +6,8 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import Footer from '@/components/Footer';
+import Navbar from '@/components/Navbar';
 
 export default function ArticlePage() {
 
@@ -127,6 +129,7 @@ export default function ArticlePage() {
 
   return (
     <main className="max-w-3xl mx-auto py-12 px-4 sm:px-6 space-y-8 text-slate-900">
+      <Navbar />
       
       {/* Back Link */}
       <Link href="/" className="inline-block text-xs font-bold text-[#FB4F14] hover:underline uppercase tracking-wider">
@@ -298,7 +301,8 @@ export default function ArticlePage() {
           Written by a dedicated fan sharing real-time game reactions, thoughts, and opinions with the community. Got feedback or want to debate a point? Hit us up on social media!
         </p>
       </div>
-
+<Footer />
     </main>
+    
   );
 }

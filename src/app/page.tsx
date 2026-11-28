@@ -82,8 +82,9 @@ export default function Home() {
 
   return (
     <>
-      <Navbar />
+     
       <main className="max-w-4xl mx-auto py-12 px-4 sm:px-6 space-y-10 bg-[#fdfbf7] min-h-screen text-slate-900">
+         <Navbar />
         {/* Hero Section */}
         <section className="space-y-6 pt-4">
           <div className="space-y-3">
@@ -223,9 +224,10 @@ export default function Home() {
               ))}
             </div>
           )}
+          <Footer />
         </section>
       </main>
-      <Footer />
+      
     </>
   );
 }
