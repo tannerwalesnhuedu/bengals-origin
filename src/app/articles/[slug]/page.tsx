@@ -55,6 +55,29 @@ export default async function ArticlePage({
     notFound();
   }
 
+  async function getArticleBySlug(slug: string): Promise<{
+  title: string;
+  date: string;
+  content: ReactNode;
+} | null> {
+  const normalized = toSlug(decodeURIComponent(slug));
+
+  const match = ARTICLES.find(
+    (item) =>
+      (item.slug ? toSlug(item.slug) === normalized : false) ||
+      toSlug(item.title) === normalized ||
+      String(item.id) === slug
+  );
+
+  if (!match) return null;
+
+  return {
+    title: match.title,
+    date: match.date,
+    content: match.content,
+  };
+}
+
   return (
     <article className="max-w-3xl mx-auto px-4 py-10">
       <h1 className="text-3xl font-bold">{article.title}</h1>
