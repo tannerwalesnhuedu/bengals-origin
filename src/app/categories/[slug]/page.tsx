@@ -7,6 +7,8 @@ import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
+const AUTHOR_NAME = 'Your Name'; // <-- Replace with your actual name
+
 export default function ArticlePage() {
   const params = useParams();
   const slug = params?.slug as string;
@@ -93,6 +95,7 @@ export default function ArticlePage() {
     );
   }
 
+  const authorDisplay = article.author || AUTHOR_NAME;
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
   const encodedUrl = encodeURIComponent(currentUrl);
   const encodedTitle = encodeURIComponent(article.title);
@@ -105,22 +108,36 @@ export default function ArticlePage() {
 
       {/* Article Header */}
       <div className="space-y-4 border-b border-slate-200 pb-6">
-        <div className="flex items-center gap-3 text-xs font-semibold text-slate-500">
+        <div className="flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-500">
           <Link
-            href={`/?category=${encodeURIComponent(article.category || 'Bengals Jungle')}`}
+            href={`/?category=${encodeURIComponent(article.category || 'Bengals Jungle')}#latest-takes`}
             className="text-[#FB4F14] uppercase tracking-wider text-xs font-extrabold hover:underline cursor-pointer"
           >
             {article.category || 'Fan Thoughts'}
           </Link>
           <span>•</span>
           <span>{new Date(article.created_at).toLocaleDateString()}</span>
-          <span>•</span>
-          <span className="text-slate-500 font-medium">{article.read_time}</span>
+          {article.read_time && (
+            <>
+              <span>•</span>
+              <span className="text-slate-500 font-medium">{article.read_time}</span>
+            </>
+          )}
         </div>
 
         <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight leading-tight">
           {article.title}
         </h1>
+
+        {/* Author Byline at Top of Article */}
+        <div className="flex items-center gap-2.5 pt-1 text-sm text-slate-700">
+          <div className="w-7 h-7 rounded-full bg-[#FB4F14]/15 text-[#FB4F14] font-black text-xs flex items-center justify-center">
+            {authorDisplay.charAt(0).toUpperCase()}
+          </div>
+          <span>
+            By <strong className="font-bold text-slate-900">{authorDisplay}</strong>
+          </span>
+        </div>
       </div>
 
       {/* FTC & impact.com Affiliate Disclosure for Gear Guides */}
