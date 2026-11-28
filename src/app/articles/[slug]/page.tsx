@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -10,7 +11,7 @@ type ArticleRow = {
   category?: string | null;
   image_url?: string | null;
   image_credit?: string | null;
-  read_time?: string | null;
+  read_time?: string | number | null;
   date?: string | null;
   created_at?: string | null;
   content?: string | null;
@@ -27,11 +28,35 @@ function getSupabaseClient() {
   return createClient(url, key);
 }
 
+// 1. Add the date formatter helper here
+function formatArticleDate(rawDate?: string | null): string {
+  if (!rawDate) return "";
+
+  const parsed = new Date(rawDate);
+  if (Number.isNaN(parsed.getTime())) {
+    return rawDate;
+  }
+
+  return parsed.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+function formatReadTime(readTime?: string | number | null): string {
+  if (readTime === null || readTime === undefined || readTime === "") {
+    return "";
+  }
+  const str = String(readTime).trim();
+  return /min\s*read/i.test(str) ? str : `${str} min read`;
+}
+
 async function getArticleBySlug(slug: string): Promise<ArticleRow | null> {
   const supabase = getSupabaseClient();
   const decodedSlug = decodeURIComponent(slug);
 
-  // 1. Try exact slug match
   const { data: bySlug, error: slugError } = await supabase
     .from("articles")
     .select("*")
@@ -45,7 +70,6 @@ async function getArticleBySlug(slug: string): Promise<ArticleRow | null> {
     return bySlug as ArticleRow;
   }
 
-  // 2. Fallback to matching by id if slug wasn't found
   const { data: byId, error: idError } = await supabase
     .from("articles")
     .select("*")
@@ -71,12 +95,23 @@ export default async function ArticlePage({
     notFound();
   }
 
-  const displayDate = article.date ?? article.created_at ?? "";
+  // 2. Format the date (and optional read time) here
+  const formattedDate = formatArticleDate(article.date ?? article.created_at);
+  const formattedReadTime = formatReadTime(article.read_time);
 
   return (
     <article className="max-w-3xl mx-auto px-4 py-10">
+      {/* Optional back link to all articles / home */}
+      <Link
+        href="/"
+        className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-600 hover:text-slate-900 mb-4"
+      >
+        <span aria-hidden="true">←</span>
+        <span>All Articles</span>
+      </Link>
+
       {article.category ? (
-        <span className="inline-block text-xs font-extrabold uppercase tracking-wider text-[#FB4F14] mb-2">
+        <span className="block text-xs font-extrabold uppercase tracking-wider text-[#FB4F14] mb-2">
           {article.category}
         </span>
       ) : null}
@@ -85,12 +120,13 @@ export default async function ArticlePage({
         {article.title}
       </h1>
 
+      {/* 3. Render formattedDate in your existing metadata bar */}
       <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500 mt-3">
-        {displayDate ? <span>{displayDate}</span> : null}
-        {article.read_time ? (
+        {formattedDate ? <span>{formattedDate}</span> : null}
+        {formattedReadTime ? (
           <>
-            {displayDate ? <span>•</span> : null}
-            <span>{article.read_time}</span>
+            {formattedDate ? <span>•</span> : null}
+            <span>{formattedReadTime}</span>
           </>
         ) : null}
       </div>
