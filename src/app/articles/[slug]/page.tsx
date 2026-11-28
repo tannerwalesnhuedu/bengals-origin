@@ -98,7 +98,7 @@ export default async function ArticlePage({
   // 2. Format the date (and optional read time) here
   const formattedDate = formatArticleDate(article.date ?? article.created_at);
   const formattedReadTime = formatReadTime(article.read_time);
-const authorName = "[Bengals Fan]"; // ← Put your name here once
+const authorName = "Bengals Fan"; // ← Put your name here once
 
   return (
     <article className="max-w-3xl mx-auto px-4 py-10">
