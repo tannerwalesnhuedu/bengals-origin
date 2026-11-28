@@ -9,7 +9,7 @@ type ArticleRecord = {
   content: ReactNode;
 };
 
-// Replace with your real articles array, DB query, or CMS fetch
+// Replace this array with your actual articles or import them from your data file
 const ARTICLES: ArticleRecord[] = [];
 
 function toSlug(value: string) {
@@ -25,11 +25,11 @@ async function getArticleBySlug(slug: string): Promise<{
   date: string;
   content: ReactNode;
 } | null> {
-  const normalized = slug.toLowerCase();
+  const normalized = toSlug(decodeURIComponent(slug));
 
   const match = ARTICLES.find(
     (item) =>
-      item.slug?.toLowerCase() === normalized ||
+      (item.slug ? toSlug(item.slug) === normalized : false) ||
       toSlug(item.title) === normalized ||
       String(item.id) === slug
   );
@@ -54,29 +54,6 @@ export default async function ArticlePage({
   if (!article) {
     notFound();
   }
-
-  async function getArticleBySlug(slug: string): Promise<{
-  title: string;
-  date: string;
-  content: ReactNode;
-} | null> {
-  const normalized = toSlug(decodeURIComponent(slug));
-
-  const match = ARTICLES.find(
-    (item) =>
-      (item.slug ? toSlug(item.slug) === normalized : false) ||
-      toSlug(item.title) === normalized ||
-      String(item.id) === slug
-  );
-
-  if (!match) return null;
-
-  return {
-    title: match.title,
-    date: match.date,
-    content: match.content,
-  };
-}
 
   return (
     <article className="max-w-3xl mx-auto px-4 py-10">
